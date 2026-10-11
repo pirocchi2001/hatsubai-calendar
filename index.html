@@ -42,6 +42,7 @@ td:nth-child(2){min-width:120px}
 td.date{white-space:nowrap;font-weight:600}
 td.price{white-space:nowrap;text-align:right}
 .chip{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:#e8eef5;color:#33475b;white-space:nowrap}
+td.conf{text-align:center}
 .c-◎{color:#2f8a1f;font-weight:700}.c-○{color:#2a78b4;font-weight:700}.c-△{color:#c2410c;font-weight:700}
 .corp{display:inline-block;background:var(--red);color:white;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:700;white-space:nowrap}
 .lim{display:inline-block;background:#fff3d6;color:#8a5a00;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:600}
@@ -61,7 +62,35 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
 .page td{padding:3px 5px;line-height:1.35;word-break:break-all}
 .page tr.month td{position:static;font-size:12px;padding:4px 8px}
 .page .pn{position:absolute;right:28px;bottom:12px;font-size:10px;color:#6b7785}
-@media(max-width:800px){.head-inner{padding:12px 14px 17px}.logo{height:28px}h1{font-size:18px}.sub{display:none}main{padding:0 10px}.btns{margin-left:0}.wrap{max-height:none}}
+@media(max-width:800px){
+  .head-inner{padding:12px 14px 17px;gap:10px}.logo{height:28px}.divider{height:28px}h1{font-size:17px}.sub{display:none}
+  .back{margin-left:0;padding:6px 10px;font-size:13px}
+  main{padding:0 10px;margin:12px auto}
+  .bar{padding:10px;gap:8px}.bar label{width:calc(50% - 4px)}.bar label.grow{width:100%}.bar select,.bar input{width:100%;font-size:16px}
+  .btns{margin-left:0;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px}.btns button{padding:11px 8px;font-size:14px}#bPdf{grid-column:1/-1;font-size:15px}
+  #bPrint{display:none}
+  .wrap{max-height:none;overflow:visible;border:0;background:transparent}
+  table{min-width:0;display:block}thead{display:none}tbody{display:block}
+  tr.month{display:block}tr.month td{display:block;position:sticky;top:0;border-radius:8px;margin:12px 0 6px}
+  tr.vr{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;background:white;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+  tr.vr td{display:block;border:0;padding:0}
+  tr.vr td.date{order:1;flex:1;font-size:13px;color:var(--blue)}
+  tr.vr td.price{order:2;font-weight:700}
+  tr.vr td.name{order:3;width:100%;font-size:15px;font-weight:600;line-height:1.45;margin:2px 0}
+  tr.vr td.cat{order:4}
+  tr.vr td.maker,tr.vr td.brand{order:5;font-size:12px;color:var(--sub)}
+  tr.vr td.conf{order:6;margin-left:auto;font-size:13px}
+  tr.vr td.maker:empty,tr.vr td.brand:empty{display:none}
+  tr.vr td.note{order:7;width:100%;margin-top:4px}tr.vr td.note:empty{display:none}
+  tr.vr.edited{box-shadow:inset 4px 0 0 var(--yellow)}
+  tr.er{display:block;background:white;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+  tr.er td{display:block;border:0;padding:4px 0}
+  tr.er td::before{content:attr(data-label);display:block;font-size:11px;color:var(--sub);margin-bottom:2px}
+  td input,td select{font-size:16px;padding:9px}
+  td:nth-child(2){min-width:0}
+  .empty{background:white;border-radius:10px}
+  .toast{bottom:16px}
+}
 @media print{body{background:white}header,.bar,.info,.stat,.toast{display:none}main{margin:0;padding:0;max-width:none}.wrap{border:0;max-height:none;overflow:visible}table{min-width:0;font-size:10px}th,tr.month td{position:static}td button,td.del{display:none}@page{size:A4 landscape;margin:10mm}}
 </style>
 </head>
@@ -173,18 +202,19 @@ function limitHtml(l){ if(!l) return ''; return /法人/.test(l) ? `<span class=
 
 function viewRow(r){
   const src = r.src ? ` <a href="${esc(r.src)}" target="_blank" rel="noopener">出典↗</a>` : '';
-  return `<tr class="${r._edited?'edited':''}"><td class="date">${esc(fmtDate(r))}</td><td>${esc(r.maker)}</td><td><span class="chip">${esc(r.cat)}</span></td><td>${esc(r.brand)}</td><td>${esc(r.name)} ${limitHtml(r.limit)}</td><td class="price">${esc(r.price)}</td><td class="c-${esc(r.conf)}" style="text-align:center">${esc(r.conf)}</td><td class="note">${esc(r.note)}${src}</td></tr>`;
+  return `<tr class="vr ${r._edited?'edited':''}"><td class="date">${esc(fmtDate(r))}</td><td class="maker">${esc(r.maker)}</td><td class="cat"><span class="chip">${esc(r.cat)}</span></td><td class="brand">${esc(r.brand)}</td><td class="name">${esc(r.name)} ${limitHtml(r.limit)}</td><td class="price">${esc(r.price)}</td><td class="conf c-${esc(r.conf)}">${esc(r.conf)}</td><td class="note">${esc(r.note)}${src}</td></tr>`;
 }
 function inp(r, f, extra=''){ return `<input data-id="${esc(r.id)}" data-f="${f}" value="${esc(r[f])}" ${extra}>`; }
 function sel(r, f, opts, blank){
   return `<select data-id="${esc(r.id)}" data-f="${f}">${blank?'<option value=""></option>':''}${opts.map(o=>`<option ${r[f]===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`;
 }
 function editRow(r){
-  return `<tr class="${r._edited?'edited':''}"><td style="min-width:140px"><input type="date" data-id="${esc(r.id)}" data-f="date" value="${esc(r.date)}"><div class="row2">${sel(r,'period',PERIODS,true)}<input type="month" data-id="${esc(r.id)}" data-f="ym" value="${esc(r.ym)}"></div></td>
-  <td>${inp(r,'maker')}</td><td><select data-id="${esc(r.id)}" data-f="cat">${[...new Set([...CATS, r.cat])].map(o=>`<option ${r.cat===o?'selected':''}>${esc(o)}</option>`).join('')}</select></td>
-  <td>${inp(r,'brand')}</td><td style="min-width:260px">${inp(r,'name')}<div class="row2">${inp(r,'limit','placeholder="限定（例: 法人限定）"')}</div></td>
-  <td>${inp(r,'price')}</td><td>${sel(r,'conf',['◎','○','△'])}</td>
-  <td style="min-width:200px">${inp(r,'note')}<div class="row2"><button class="del" data-del="${esc(r.id)}">この行を削除</button></div></td></tr>`;
+  const L=(l,c)=>`<td data-label="${l}">${c}</td>`;
+  return `<tr class="er ${r._edited?'edited':''}">${L('発売日',`<input type="date" data-id="${esc(r.id)}" data-f="date" value="${esc(r.date)}"><div class="row2">${sel(r,'period',PERIODS,true)}<input type="month" data-id="${esc(r.id)}" data-f="ym" value="${esc(r.ym)}"></div>`)}
+  ${L('メーカー',inp(r,'maker'))}${L('カテゴリ',`<select data-id="${esc(r.id)}" data-f="cat">${[...new Set([...CATS, r.cat])].map(o=>`<option ${r.cat===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`)}
+  ${L('ブランド',inp(r,'brand'))}${L('商品名・限定',`${inp(r,'name')}<div class="row2">${inp(r,'limit','placeholder="限定（例: 法人限定）"')}</div>`)}
+  ${L('価格(税込)',inp(r,'price'))}${L('確度',sel(r,'conf',['◎','○','△']))}
+  ${L('備考',`${inp(r,'note')}<div class="row2"><button class="del" data-del="${esc(r.id)}">この行を削除</button></div>`)}</tr>`;
 }
 function render(){
   const rows = filtered();
