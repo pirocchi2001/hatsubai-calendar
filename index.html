@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新商品発売スケジュール</title>
+<style>
+:root{--red:#dc4852;--yellow:#f4c13a;--teal:#36afbc;--green:#51ac41;--blue:#409edc;--ink:#1f2d3d;--sub:#6b7785;--line:#dde3ea;--bg:#ebf0f6}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;background:var(--bg);color:var(--ink)}
+header{background:white;position:relative}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--red) 0 20%,var(--yellow) 20% 40%,var(--teal) 40% 60%,var(--green) 60% 80%,var(--blue) 80% 100%)}
+.head-inner{max-width:1500px;margin:0 auto;padding:16px 20px 21px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{height:40px;display:block}
+.divider{width:1px;height:40px;background:var(--line)}
+h1{margin:0;font-size:22px}
+.sub{margin:2px 0 0;font-size:13px;color:var(--sub)}
+.back{margin-left:auto;font-size:14px;color:var(--ink);text-decoration:none;border:1px solid var(--line);padding:8px 14px;border-radius:8px;background:white}
+main{max-width:1500px;margin:18px auto;padding:0 20px}
+.bar{background:white;border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.bar label{font-size:12px;color:var(--sub);display:flex;flex-direction:column;gap:3px}
+.bar input,.bar select{padding:8px 9px;border:1px solid #c5ced8;border-radius:7px;font-size:14px;background:white;min-width:0}
+.bar .grow{flex:1;min-width:160px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto}
+button{font:inherit;font-size:14px;font-weight:600;padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:white;color:var(--ink);cursor:pointer}
+button:hover{background:#f4f7fa}
+button.primary{background:var(--ink);color:white;border-color:var(--ink)}
+button.primary:hover{background:#2c3e54}
+button.on{background:var(--yellow);border-color:#d9a41c}
+button:disabled{opacity:.5;cursor:wait}
+.info{background:white;border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:13px;line-height:1.7;color:#444}
+.info summary{cursor:pointer;font-weight:600}
+.info ul{margin:6px 0 0;padding-left:20px}
+.stat{font-size:13px;color:var(--sub);margin:0 2px 8px}
+.wrap{background:white;border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:calc(100vh - 230px);min-height:300px}
+table{border-collapse:collapse;width:100%;min-width:1100px;font-size:13px}
+th{position:sticky;top:0;z-index:2;background:#f4f7fa;text-align:left;padding:8px 8px;border-bottom:2px solid var(--line);white-space:nowrap;font-size:12px}
+td{padding:6px 8px;border-bottom:1px solid #eef1f5;vertical-align:top;line-height:1.5}
+tr.month td{background:var(--ink);color:white;font-weight:700;font-size:15px;padding:8px 10px;position:sticky;top:34px;z-index:1}
+tr.edited td:first-child{box-shadow:inset 4px 0 0 var(--yellow)}
+td:nth-child(2){min-width:120px}
+td.date{white-space:nowrap;font-weight:600}
+td.price{white-space:nowrap;text-align:right}
+.chip{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:#e8eef5;color:#33475b;white-space:nowrap}
+.c-◎{color:#2f8a1f;font-weight:700}.c-○{color:#2a78b4;font-weight:700}.c-△{color:#c2410c;font-weight:700}
+.corp{display:inline-block;background:var(--red);color:white;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:700;white-space:nowrap}
+.lim{display:inline-block;background:#fff3d6;color:#8a5a00;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:600}
+.note{color:#555;font-size:12px}
+.note a{color:var(--blue);text-decoration:none;white-space:nowrap}
+td input,td select{width:100%;padding:5px 6px;border:1px solid #c5ced8;border-radius:5px;font:inherit;font-size:12.5px;background:white;min-width:0}
+td .row2{display:flex;gap:4px;margin-top:3px}
+td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
+.empty{padding:40px;text-align:center;color:var(--sub)}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:white;padding:13px 20px;border-radius:8px;font-size:14px;display:none;max-width:90%;z-index:50}
+#pdfStage{position:fixed;left:-20000px;top:0;width:1123px}
+.page{width:1123px;height:794px;padding:26px 28px;background:white;position:relative;overflow:hidden;color:#1f2d3d;font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif}
+.page h2{margin:0 0 2px;font-size:20px}
+.page .meta{font-size:11px;color:#6b7785;margin-bottom:8px}
+.page table{min-width:0;width:100%;table-layout:fixed;font-size:10.5px}
+.page th{position:static;font-size:10px;padding:4px 5px}
+.page td{padding:3px 5px;line-height:1.35;word-break:break-all}
+.page tr.month td{position:static;font-size:12px;padding:4px 8px}
+.page .pn{position:absolute;right:28px;bottom:12px;font-size:10px;color:#6b7785}
+@media(max-width:800px){.head-inner{padding:12px 14px 17px}.logo{height:28px}h1{font-size:18px}.sub{display:none}main{padding:0 10px}.btns{margin-left:0}.wrap{max-height:none}}
+@media print{body{background:white}header,.bar,.info,.stat,.toast{display:none}main{margin:0;padding:0;max-width:none}.wrap{border:0;max-height:none;overflow:visible}table{min-width:0;font-size:10px}th,tr.month td{position:static}td button,td.del{display:none}@page{size:A4 landscape;margin:10mm}}
+</style>
+</head>
+<body>
+<header>
+  <div class="head-inner">
+    <img class="logo" alt="TOYLO PARK" src="data:image/webp;base64,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">
+    <div class="divider"></div>
+    <div>
+      <h1>新商品発売スケジュール</h1>
+      <p class="sub">玩具・ホビー・キャラクターグッズの発売一覧（毎週水・金に更新）</p>
+    </div>
+    <a class="back" href="https://pirocchi2001.github.io/sagyo-tool/">← 作業ツールへ</a>
+  </div>
+</header>
+<main>
+  <div class="bar">
+    <label class="grow">キーワード検索<input id="q" placeholder="商品名・ブランド・メーカー"></label>
+    <label>月<select id="fMonth"></select></label>
+    <label>カテゴリ<select id="fCat"></select></label>
+    <label>ブランド<select id="fBrand"></select></label>
+    <label>確度<select id="fConf"><option value="">すべて</option><option value="◎">◎ 公式確認</option><option value="○">○ 報道等</option><option value="△">△ 予想・未確定</option></select></label>
+    <label>限定<select id="fLimit"><option value="">すべて</option><option value="corp">法人限定のみ</option><option value="any">限定ありのみ</option></select></label>
+    <div class="btns">
+      <button id="bEdit">✏️ 編集モード</button>
+      <button id="bAdd" style="display:none">＋ 行を追加</button>
+      <button class="primary" id="bPdf">📄 PDFをダウンロード</button>
+      <button id="bPrint">🖨 印刷</button>
+      <button id="bCsv">CSV</button>
+      <button id="bJson">JSON書き出し</button>
+      <button id="bImport">JSON読み込み</button>
+      <button id="bReset">編集を全て戻す</button>
+    </div>
+  </div>
+  <details class="info" id="info"><summary>調査メモ・凡例（クリックで開く）</summary><ul id="notes"></ul></details>
+  <p class="stat" id="stat"></p>
+  <div class="wrap"><table id="tbl"></table></div>
+</main>
+<div class="toast" id="toast"></div>
+<div id="pdfStage"></div>
+<input type="file" id="file" accept=".json,application/json" style="display:none">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const LS_KEY = 'hatsubaiCal_v1';
+const CATS = ['文具','TV玩具','玩具','電子玩具','ドール','プラモ・フィギュア','ミニカー','ゲーム','ゲーム機','TCG','TCG/カード','アーケード','キャラくじ','ファンシー','VTuber・YouTuber','カプセルトイ','食玩','雑貨','書籍'];
+const PERIODS = ['上旬','中旬','下旬','未定'];
+const FIELDS = ['date','period','ym','maker','cat','brand','name','price','limit','conf','note'];
+const WD = ['日','月','火','水','木','金','土'];
+let published = {updated:'', notes:[], rows:[]};
+let local = loadLocal();
+let editMode = false;
+
+function loadLocal(){
+  try{ const s = JSON.parse(localStorage.getItem(LS_KEY)); if(s && s.edits) return s; }catch(e){}
+  return {edits:{}, added:[], deleted:[]};
+}
+function saveLocal(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(local)); }catch(e){ toast('ブラウザに保存できませんでした（画面を閉じると編集は消えます）'); }
+}
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast.t); toast.t=setTimeout(()=>t.style.display='none',3500); }
+
+function allRows(){
+  const del = new Set(local.deleted);
+  const rows = published.rows.filter(r=>!del.has(r.id)).map(r=>local.edits[r.id] ? {...r, ...local.edits[r.id], _edited:true} : r);
+  return rows.concat(local.added.map(r=>({...r,_edited:true,_added:true})));
+}
+function updateRow(id, field, value){
+  const add = local.added.find(r=>r.id===id);
+  if(add){ add[field]=value; if(field==='date' && value){ add.ym=value.slice(0,7); add.period=''; } }
+  else{
+    const e = local.edits[id] = local.edits[id] || {};
+    e[field]=value;
+    if(field==='date' && value){ e.ym=value.slice(0,7); e.period=''; }
+    if(field==='period' && value){ e.date=''; }
+  }
+  saveLocal();
+}
+function sortKey(r){
+  const ym = r.ym || (r.date||'').slice(0,7) || '9999-99';
+  const pi = r.date ? 9 : Math.max(0, PERIODS.indexOf(r.period));
+  return ym + '|' + pi + '|' + (r.date||'') + '|' + (CATS.indexOf(r.cat)+100) + '|' + (r.name||'');
+}
+function fmtDate(r){
+  if(r.date){ const d=new Date(r.date+'T00:00:00'); return `${d.getMonth()+1}月${d.getDate()}日(${WD[d.getDay()]})`; }
+  const m = r.ym ? Number(r.ym.slice(5,7)) : '';
+  return (m ? m+'月' : '') + (r.period || '未定');
+}
+function monthLabel(ym){ return ym ? `【${ym.slice(0,4)}年${ym.slice(5,7)}月】` : '【時期未定】'; }
+
+function filtered(){
+  const q = $('q').value.trim().toLowerCase();
+  const fm=$('fMonth').value, fc=$('fCat').value, fb=$('fBrand').value, fcf=$('fConf').value, fl=$('fLimit').value;
+  return allRows().filter(r=>{
+    const ym = r.ym || (r.date||'').slice(0,7);
+    if(fm && ym!==fm) return false;
+    if(fc && r.cat!==fc) return false;
+    if(fb && r.brand!==fb) return false;
+    if(fcf && r.conf!==fcf) return false;
+    if(fl==='corp' && !/法人/.test(r.limit||'')) return false;
+    if(fl==='any' && !r.limit) return false;
+    if(q && !(`${r.name} ${r.brand} ${r.maker} ${r.cat} ${r.note}`.toLowerCase().includes(q))) return false;
+    return true;
+  }).sort((a,b)=> sortKey(a)<sortKey(b)?-1:1);
+}
+function limitHtml(l){ if(!l) return ''; return /法人/.test(l) ? `<span class="corp">🏢 ${esc(l)}</span>` : `<span class="lim">${esc(l)}</span>`; }
+
+function viewRow(r){
+  const src = r.src ? ` <a href="${esc(r.src)}" target="_blank" rel="noopener">出典↗</a>` : '';
+  return `<tr class="${r._edited?'edited':''}"><td class="date">${esc(fmtDate(r))}</td><td>${esc(r.maker)}</td><td><span class="chip">${esc(r.cat)}</span></td><td>${esc(r.brand)}</td><td>${esc(r.name)} ${limitHtml(r.limit)}</td><td class="price">${esc(r.price)}</td><td class="c-${esc(r.conf)}" style="text-align:center">${esc(r.conf)}</td><td class="note">${esc(r.note)}${src}</td></tr>`;
+}
+function inp(r, f, extra=''){ return `<input data-id="${esc(r.id)}" data-f="${f}" value="${esc(r[f])}" ${extra}>`; }
+function sel(r, f, opts, blank){
+  return `<select data-id="${esc(r.id)}" data-f="${f}">${blank?'<option value=""></option>':''}${opts.map(o=>`<option ${r[f]===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`;
+}
+function editRow(r){
+  return `<tr class="${r._edited?'edited':''}"><td style="min-width:140px"><input type="date" data-id="${esc(r.id)}" data-f="date" value="${esc(r.date)}"><div class="row2">${sel(r,'period',PERIODS,true)}<input type="month" data-id="${esc(r.id)}" data-f="ym" value="${esc(r.ym)}"></div></td>
+  <td>${inp(r,'maker')}</td><td><select data-id="${esc(r.id)}" data-f="cat">${[...new Set([...CATS, r.cat])].map(o=>`<option ${r.cat===o?'selected':''}>${esc(o)}</option>`).join('')}</select></td>
+  <td>${inp(r,'brand')}</td><td style="min-width:260px">${inp(r,'name')}<div class="row2">${inp(r,'limit','placeholder="限定（例: 法人限定）"')}</div></td>
+  <td>${inp(r,'price')}</td><td>${sel(r,'conf',['◎','○','△'])}</td>
+  <td style="min-width:200px">${inp(r,'note')}<div class="row2"><button class="del" data-del="${esc(r.id)}">この行を削除</button></div></td></tr>`;
+}
+function render(){
+  const rows = filtered();
+  let html = `<thead><tr><th>発売日</th><th>メーカー</th><th>カテゴリ</th><th>ブランド</th><th>商品名</th><th>価格(税込)</th><th>確度</th><th>備考・出典</th></tr></thead><tbody>`;
+  let cur = null;
+  for(const r of rows){
+    const ym = r.ym || (r.date||'').slice(0,7);
+    if(ym!==cur){ cur=ym; html += `<tr class="month"><td colspan="8">### ${monthLabel(ym)}</td></tr>`.replace('### ',''); }
+    html += editMode ? editRow(r) : viewRow(r);
+  }
+  html += '</tbody>';
+  $('tbl').innerHTML = rows.length ? html : '<tbody><tr><td class="empty">該当する商品がありません</td></tr></tbody>';
+  const corp = rows.filter(r=>/法人/.test(r.limit||'')).length;
+  $('stat').textContent = `${rows.length}件を表示（全${allRows().length}件）／ データ更新: ${published.updated||'-'}／ 法人限定: ${corp}件` + (local.added.length||Object.keys(local.edits).length||local.deleted.length ? ' ／ この端末で編集中の変更あり' : '');
+}
+function fillFilters(){
+  const rows = allRows();
+  const months = [...new Set(rows.map(r=>r.ym || (r.date||'').slice(0,7)).filter(Boolean))].sort();
+  const keep = {m:$('fMonth').value,c:$('fCat').value,b:$('fBrand').value};
+  $('fMonth').innerHTML = '<option value="">すべて</option>' + months.map(m=>`<option value="${m}">${m.slice(0,4)}年${m.slice(5)}月</option>`).join('');
+  const cats = [...new Set(rows.map(r=>r.cat))].sort((a,b)=>CATS.indexOf(a)-CATS.indexOf(b));
+  $('fCat').innerHTML = '<option value="">すべて</option>' + cats.map(c=>`<option>${esc(c)}</option>`).join('');
+  const brands = [...new Set(rows.map(r=>r.brand).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ja'));
+  $('fBrand').innerHTML = '<option value="">すべて</option>' + brands.map(c=>`<option>${esc(c)}</option>`).join('');
+  $('fMonth').value=keep.m; $('fCat').value=keep.c; $('fBrand').value=keep.b;
+}
+
+/* ---------- 編集 ---------- */
+$('tbl').addEventListener('change', e=>{
+  const t=e.target; if(!t.dataset.f) return;
+  updateRow(t.dataset.id, t.dataset.f, t.value);
+  if(t.dataset.f==='date' || t.dataset.f==='period' || t.dataset.f==='ym'){ fillFilters(); render(); }
+  else { t.closest('tr').classList.add('edited'); $('stat').textContent = $('stat').textContent.replace(/ ／ この端末.*$/,'') + ' ／ この端末で編集中の変更あり'; }
+});
+$('tbl').addEventListener('click', e=>{
+  const id = e.target.dataset && e.target.dataset.del; if(!id) return;
+  if(!confirm('この行を削除しますか？（「編集を全て戻す」で復元できます）')) return;
+  const ai = local.added.findIndex(r=>r.id===id);
+  if(ai>=0) local.added.splice(ai,1); else local.deleted.push(id);
+  saveLocal(); fillFilters(); render();
+});
+$('bEdit').onclick = ()=>{
+  editMode = !editMode;
+  $('bEdit').classList.toggle('on', editMode);
+  $('bEdit').textContent = editMode ? '✅ 編集を終える' : '✏️ 編集モード';
+  $('bAdd').style.display = editMode ? '' : 'none';
+  render();
+};
+$('bAdd').onclick = ()=>{
+  const ym = $('fMonth').value || new Date().toISOString().slice(0,7);
+  const id = 'u-' + Date.now().toString(36);
+  local.added.unshift({id, date:'', period:'未定', ym, maker:'', cat:$('fCat').value||'玩具', brand:'', name:'（新しい商品）', price:'', limit:'', conf:'○', note:'', src:''});
+  saveLocal(); $('q').value=''; fillFilters(); render(); toast('行を追加しました。商品名などを入力してください');
+};
+$('bReset').onclick = ()=>{
+  if(!confirm('この端末での編集・追加・削除をすべて元に戻します。よろしいですか？')) return;
+  local = {edits:{}, added:[], deleted:[]}; saveLocal(); fillFilters(); render(); toast('元に戻しました');
+};
+['q','fMonth','fCat','fBrand','fConf','fLimit'].forEach(id=>$(id).addEventListener('input', render));
+
+/* ---------- 書き出し/読み込み ---------- */
+function download(name, blob){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); }
+const stamp = () => new Date().toISOString().slice(0,10).replace(/-/g,'');
+function cleanRow(r){ const o={id:r.id}; [...FIELDS,'src'].forEach(f=>o[f]=r[f]??''); return o; }
+$('bJson').onclick = ()=>{
+  const out = {updated:published.updated, notes:published.notes, rows: allRows().map(cleanRow)};
+  download(`hatsubai_${stamp()}.json`, new Blob([JSON.stringify(out,null,1)],{type:'application/json'}));
+};
+$('bCsv').onclick = ()=>{
+  const head=['発売日','メーカー','カテゴリ','ブランド','商品名','価格(税込)','限定','確度','備考','出典'];
+  const q = v => '"'+String(v??'').replace(/"/g,'""')+'"';
+  const lines=[head.map(q).join(',')].concat(filtered().map(r=>[fmtDateFull(r),r.maker,r.cat,r.brand,r.name,r.price,r.limit,r.conf,r.note,r.src].map(q).join(',')));
+  download(`hatsubai_${stamp()}.csv`, new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv'}));
+};
+function fmtDateFull(r){ return r.date ? r.date.replace(/-/g,'/') : fmtDate(r); }
+$('bImport').onclick = ()=>$('file').click();
+$('file').onchange = async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  try{
+    const data = JSON.parse(await f.text());
+    const rows = Array.isArray(data) ? data : data.rows;
+    if(!Array.isArray(rows) || !rows.every(r=>r && r.id && r.name!==undefined)) throw new Error('形式が違います');
+    if(!confirm(`${rows.length}件を読み込みます。この端末の編集内容は読み込んだ内容で置き換わります。よろしいですか？`)) return;
+    const pub = new Map(published.rows.map(r=>[r.id,r]));
+    const seen = new Set(); local = {edits:{}, added:[], deleted:[]};
+    for(const r0 of rows){
+      const r = cleanRow(r0); seen.add(r.id);
+      const p = pub.get(r.id);
+      if(!p){ local.added.push(r); continue; }
+      const diff={}; FIELDS.forEach(k=>{ if((p[k]??'')!==(r[k]??'')) diff[k]=r[k]; });
+      if(Object.keys(diff).length) local.edits[r.id]=diff;
+    }
+    published.rows.forEach(p=>{ if(!seen.has(p.id)) local.deleted.push(p.id); });
+    saveLocal(); fillFilters(); render(); toast('読み込みました');
+  }catch(err){ toast('読み込めませんでした: ' + err.message); }
+};
+$('bPrint').onclick = ()=>{ if(editMode) $('bEdit').click(); setTimeout(()=>window.print(),50); };
+
+/* ---------- PDF ---------- */
+function pdfTable(items){
+  return `<table><colgroup><col style="width:78px"><col style="width:108px"><col style="width:78px"><col style="width:84px"><col><col style="width:84px"><col style="width:36px"><col style="width:170px"></colgroup>
+  <thead><tr><th>発売日</th><th>メーカー</th><th>カテゴリ</th><th>ブランド</th><th>商品名</th><th>価格(税込)</th><th>確度</th><th>備考</th></tr></thead><tbody>${items.join('')}</tbody></table>`;
+}
+function pdfRow(r){
+  const lim = r.limit ? (/法人/.test(r.limit) ? `<span class="corp">🏢${esc(r.limit)}</span>` : `<span class="lim">${esc(r.limit)}</span>`) : '';
+  return `<tr><td class="date">${esc(fmtDate(r))}</td><td>${esc(r.maker)}</td><td>${esc(r.cat)}</td><td>${esc(r.brand)}</td><td>${esc(r.name)} ${lim}</td><td class="price">${esc(r.price)}</td><td class="c-${esc(r.conf)}" style="text-align:center">${esc(r.conf)}</td><td class="note">${esc(r.note)}</td></tr>`;
+}
+async function makePdf(){
+  if(!window.html2canvas || !window.jspdf){ toast('PDFライブラリを読み込み中です。少し待ってからもう一度押してください'); return; }
+  const rows = filtered();
+  if(!rows.length){ toast('出力する行がありません'); return; }
+  const btn=$('bPdf'); btn.disabled=true; const label=btn.textContent;
+  const stage=$('pdfStage'); stage.innerHTML='';
+  try{
+    // 1) 全行を同じ幅で並べて高さを測る
+    let cur=null; const items=[];
+    for(const r of rows){
+      const ym = r.ym || (r.date||'').slice(0,7);
+      if(ym!==cur){ cur=ym; items.push({html:`<tr class="month"><td colspan="8">${monthLabel(ym)}</td></tr>`, month:true}); }
+      items.push({html:pdfRow(r)});
+    }
+    const probe=document.createElement('div'); probe.className='page'; probe.style.height='auto';
+    probe.innerHTML = pdfTable(items.map(i=>i.html)); stage.append(probe);
+    const trs=[...probe.querySelectorAll('tbody tr')];
+    trs.forEach((tr,i)=>items[i].h=tr.getBoundingClientRect().height);
+    const thH = probe.querySelector('thead').getBoundingClientRect().height;
+    const first = 52, avail = 794 - 52 - 22 - thH;   // 余白・ページ番号・見出し分を除く
+    // 2) ページ分割（月見出しが単独でページ末尾に残らないようにする）
+    const pages=[[]]; let used=first;
+    items.forEach((it,i)=>{
+      const need = it.h + (it.month && items[i+1] ? items[i+1].h : 0);
+      if(used + need > avail && pages[pages.length-1].length){ pages.push([]); used=0; }
+      pages[pages.length-1].push(it.html); used += it.h;
+    });
+    // 3) 1ページずつ画像化してPDFへ
+    const {jsPDF}=window.jspdf; const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    const title=`新商品発売スケジュール`;
+    const f=[]; if($('fMonth').value) f.push($('fMonth').selectedOptions[0].text); if($('fCat').value) f.push($('fCat').value); if($('fBrand').value) f.push($('fBrand').value); if($('q').value) f.push('検索:'+$('q').value);
+    for(let i=0;i<pages.length;i++){
+      btn.textContent=`作成中… ${i+1}/${pages.length}`;
+      stage.innerHTML='';
+      const pg=document.createElement('div'); pg.className='page';
+      pg.innerHTML = (i===0 ? `<h2>${title}</h2><div class="meta">データ更新: ${esc(published.updated)} ／ 出力: ${new Date().toLocaleString('ja-JP')} ／ ${rows.length}件${f.length?' ／ 絞り込み: '+esc(f.join(' / ')):''} ／ ◎公式確認 ○報道等 △予想・要確認</div>` : '') + pdfTable(pages[i]) + `<div class="pn">${i+1} / ${pages.length}</div>`;
+      stage.append(pg);
+      const canvas = await html2canvas(pg,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+      if(i>0) pdf.addPage();
+      pdf.addImage(canvas.toDataURL('image/jpeg',0.92),'JPEG',0,0,297,210);
+      await new Promise(r=>setTimeout(r,0));
+    }
+    pdf.save(`新商品発売スケジュール_${stamp()}.pdf`);
+    toast(`PDFを作成しました（${pages.length}ページ）`);
+  }catch(err){ console.error(err); toast('PDF作成に失敗しました: ' + err.message); }
+  finally{ stage.innerHTML=''; btn.disabled=false; btn.textContent=label; }
+}
+$('bPdf').onclick = makePdf;
+
+/* ---------- 起動 ---------- */
+(async function init(){
+  try{
+    const res = await fetch('data.json?t=' + Date.now());
+    published = await res.json();
+  }catch(e){ toast('data.json を読み込めませんでした'); }
+  $('notes').innerHTML = (published.notes||[]).map(n=>`<li>${esc(n)}</li>`).join('');
+  fillFilters(); render();
+})();
+</script>
+</body>
+</html>
