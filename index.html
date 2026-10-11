@@ -234,7 +234,7 @@ $('bEdit').onclick = ()=>{
   render();
 };
 $('bAdd').onclick = ()=>{
-  const ym = $('fMonth').value || new Date().toISOString().slice(0,7);
+  const d0 = new Date(); const ym = $('fMonth').value || (d0.getFullYear()+'-'+String(d0.getMonth()+1).padStart(2,'0'));
   const id = 'u-' + Date.now().toString(36);
   local.added.unshift({id, date:'', period:'未定', ym, maker:'', cat:$('fCat').value||'玩具', brand:'', name:'（新しい商品）', price:'', limit:'', conf:'○', note:'', src:''});
   saveLocal(); $('q').value=''; fillFilters(); render(); toast('行を追加しました。商品名などを入力してください');
@@ -247,7 +247,7 @@ $('bReset').onclick = ()=>{
 
 /* ---------- 書き出し/読み込み ---------- */
 function download(name, blob){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); }
-const stamp = () => new Date().toISOString().slice(0,10).replace(/-/g,'');
+const stamp = () => { const d=new Date(); return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0'); };
 function cleanRow(r){ const o={id:r.id}; [...FIELDS,'src'].forEach(f=>o[f]=r[f]??''); return o; }
 $('bJson').onclick = ()=>{
   const out = {updated:published.updated, notes:published.notes, rows: allRows().map(cleanRow)};
