@@ -158,17 +158,15 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
     <table>
       <tr><th>発売日</th><td>「10月17日(土)」のように日付が決まっているものと、「10月下旬」「11月未定」のように時期だけのものがあります。時期だけのものは、その月の先頭に表示されます。</td></tr>
       <tr><th>価格(税込)</th><td>税込の価格です。ゲームなど税抜で発表されたものは、税込に直して載せています。</td></tr>
-      <tr><th>確度</th><td>情報がどのくらい確かかを表す印です。<br><b>◎</b> メーカー等の公式情報で確認済み　<b>○</b> ニュースやまとめサイトの情報　<b>△</b> 予想・非公式・日程が未確定（<b>必ず公式サイトで確認</b>してください）</td></tr>
       <tr><th>🏢法人限定（赤）</th><td>法人（店舗・企業）向けにしか販売されない商品です。</td></tr>
       <tr><th>黄色の表示</th><td>「ファミマ限定」など、特定の店・チャネル限定の商品です。</td></tr>
-      <tr><th>出典↗</th><td>情報の元になったページへのリンクです。</td></tr>
     </table>
 
     <h3>③ 見たいものだけに絞り込む</h3>
     <ol>
-      <li><b>キーワード検索</b>：商品名・ブランド・メーカーの一部を入れると、その言葉を含むものだけが残ります（例：「ちいかわ」）。</li>
+      <li><b>キーワード検索</b>：商品名・ブランド・メーカー・備考の一部を入れると、その言葉を含むものだけが残ります（例：「ちいかわ」）。</li>
       <li><b>月</b>：見たい月を1つ選びます。</li>
-      <li><b>カテゴリ・ブランド・確度（選択／除外）</b>：ボタンを押すとチェックリストが開きます。
+      <li><b>カテゴリ・ブランド・確度（選択／除外）</b>：確度は表には表示されませんが、絞り込みに使えます（<b>◎</b>公式情報で確認済み／<b>○</b>報道・まとめサイトの情報／<b>△</b>予想・日程未確定）。ボタンを押すとチェックリストが開きます。
         <ul>
           <li><span class="btnx">✔ 選択</span>…チェックを付けたものだけを表示します。（例：ブランドで「サンリオ」「ちいかわ」を選択）</li>
           <li><span class="btnx">✖ 除外</span>…チェックを付けたものを隠します。（例：カテゴリで「カプセルトイ」を除外）</li>
@@ -202,7 +200,7 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
 
     <h3>⑥ 内容を自分で直す（編集モード）</h3>
     <ol>
-      <li><span class="btnx">✏️ 編集モード</span>を押すと、表の各項目（日付・商品名・価格・限定・確度・備考など）が入力欄になり、直接書き換えられます。</li>
+      <li><span class="btnx">✏️ 編集モード</span>を押すと、表の各項目（日付・商品名・価格・限定・確度・備考など。確度と備考は編集モードでのみ表示）が入力欄になり、直接書き換えられます。</li>
       <li><span class="btnx">＋ 行を追加</span>で新しい商品を足せます。各行の「この行を削除」で消せます。</li>
       <li><span class="btnx">✅ 編集を終える</span>を押すと、通常の表示に戻ります。</li>
       <li>直したものは自動で保存され、ブランド分けやPDF・カレンダーにも反映されます。</li>
@@ -225,12 +223,12 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
 
     <h3>⑨ ご利用上の注意</h3>
     <ul class="last">
-      <li>発売日・価格は<b>変更されることがあります</b>。特に確度が<b>○・△</b>のものは、ご案内や発注の前に<b>必ず公式サイトで確認</b>してください。</li>
+      <li>発売日・価格は<b>変更されることがあります</b>。特に確度が<b>○・△</b>のもの（確度の絞り込みで確認できます）は、ご案内や発注の前に<b>必ず公式サイトで確認</b>してください。</li>
       <li>まだ調べきれていない分野もあります（詳しくは下の「調査メモ・凡例」）。載っていない＝発売しない、ではありません。</li>
     </ul>
   </details>
   <div class="bar">
-    <label class="grow">キーワード検索<input id="q" placeholder="商品名・ブランド・メーカー"></label>
+    <label class="grow">キーワード検索<input id="q" placeholder="商品名・ブランド・メーカー・備考・確度(◎○△)"></label>
     <label>月<select id="fMonth"></select></label>
     <div class="mf" id="mfCat"></div>
     <div class="mf" id="mfBrand"></div>
@@ -319,7 +317,7 @@ function filtered(){
     if(!mfPass('conf',r.conf)) return false;
     if(fl==='corp' && !/法人/.test(r.limit||'')) return false;
     if(fl==='any' && !r.limit) return false;
-    if(q && !(`${r.name} ${r.brand} ${r.maker} ${r.cat} ${r.note}`.toLowerCase().includes(q))) return false;
+    if(q && !(`${r.name} ${r.brand} ${r.maker} ${r.cat} ${r.note} ${r.conf}`.toLowerCase().includes(q))) return false;
     return true;
   }).sort((a,b)=> sortKey(a)<sortKey(b)?-1:1);
 }
@@ -327,7 +325,7 @@ function limitHtml(l){ if(!l) return ''; return /法人/.test(l) ? `<span class=
 
 function viewRow(r){
   const src = r.src ? ` <a href="${esc(r.src)}" target="_blank" rel="noopener">出典↗</a>` : '';
-  return `<tr class="vr ${r._edited?'edited':''}"><td class="date">${esc(fmtDate(r))}</td><td class="maker">${esc(r.maker)}</td><td class="cat"><span class="chip">${esc(r.cat)}</span></td><td class="brand">${esc(r.brand)}</td><td class="name">${esc(r.name)} ${limitHtml(r.limit)}</td><td class="price">${esc(r.price)}</td><td class="conf c-${esc(r.conf)}">${esc(r.conf)}</td><td class="note">${esc(r.note)}${src}</td></tr>`;
+  return `<tr class="vr ${r._edited?'edited':''}"><td class="date">${esc(fmtDate(r))}</td><td class="maker">${esc(r.maker)}</td><td class="cat"><span class="chip">${esc(r.cat)}</span></td><td class="brand">${esc(r.brand)}</td><td class="name">${esc(r.name)} ${limitHtml(r.limit)}</td><td class="price">${esc(r.price)}</td></tr>`;
 }
 function inp(r, f, extra=''){ return `<input data-id="${esc(r.id)}" data-f="${f}" value="${esc(r[f])}" ${extra}>`; }
 function sel(r, f, opts, blank){
@@ -343,11 +341,11 @@ function editRow(r){
 }
 function render(){
   const rows = filtered();
-  let html = `<thead><tr><th>発売日</th><th>メーカー</th><th>カテゴリ</th><th>ブランド</th><th>商品名</th><th>価格(税込)</th><th>確度</th><th>備考・出典</th></tr></thead><tbody>`;
+  let html = `<thead><tr><th>発売日</th><th>メーカー</th><th>カテゴリ</th><th>ブランド</th><th>商品名</th><th>価格(税込)</th>${editMode?'<th>確度</th><th>備考・出典</th>':''}</tr></thead><tbody>`;
   let cur = null;
   for(const r of rows){
     const ym = r.ym || (r.date||'').slice(0,7);
-    if(ym!==cur){ cur=ym; html += `<tr class="month"><td colspan="8">### ${monthLabel(ym)}</td></tr>`.replace('### ',''); }
+    if(ym!==cur){ cur=ym; html += `<tr class="month"><td colspan="${editMode?8:6}">### ${monthLabel(ym)}</td></tr>`.replace('### ',''); }
     html += editMode ? editRow(r) : viewRow(r);
   }
   html += '</tbody>';
@@ -457,12 +455,12 @@ $('bPrint').onclick = ()=>{ if(editMode) $('bEdit').click(); setTimeout(()=>wind
 
 /* ---------- PDF ---------- */
 function pdfTable(items){
-  return `<table><colgroup><col style="width:78px"><col style="width:108px"><col style="width:78px"><col style="width:84px"><col><col style="width:84px"><col style="width:36px"><col style="width:170px"></colgroup>
-  <thead><tr><th>発売日</th><th>メーカー</th><th>カテゴリ</th><th>ブランド</th><th>商品名</th><th>価格(税込)</th><th>確度</th><th>備考</th></tr></thead><tbody>${items.join('')}</tbody></table>`;
+  return `<table><colgroup><col style="width:78px"><col style="width:108px"><col style="width:78px"><col style="width:84px"><col><col style="width:84px"></colgroup>
+  <thead><tr><th>発売日</th><th>メーカー</th><th>カテゴリ</th><th>ブランド</th><th>商品名</th><th>価格(税込)</th></tr></thead><tbody>${items.join('')}</tbody></table>`;
 }
 function pdfRow(r){
   const lim = r.limit ? (/法人/.test(r.limit) ? `<span class="corp">🏢${esc(r.limit)}</span>` : `<span class="lim">${esc(r.limit)}</span>`) : '';
-  return `<tr><td class="date">${esc(fmtDate(r))}</td><td>${esc(r.maker)}</td><td>${esc(r.cat)}</td><td>${esc(r.brand)}</td><td>${esc(r.name)} ${lim}</td><td class="price">${esc(r.price)}</td><td class="c-${esc(r.conf)}" style="text-align:center">${esc(r.conf)}</td><td class="note">${esc(r.note)}</td></tr>`;
+  return `<tr><td class="date">${esc(fmtDate(r))}</td><td>${esc(r.maker)}</td><td>${esc(r.cat)}</td><td>${esc(r.brand)}</td><td>${esc(r.name)} ${lim}</td><td class="price">${esc(r.price)}</td></tr>`;
 }
 async function makePdf(){
   if(!window.html2canvas || !window.jspdf){ toast('PDFライブラリを読み込み中です。少し待ってからもう一度押してください'); return; }
@@ -475,7 +473,7 @@ async function makePdf(){
     let cur=null; const items=[];
     for(const r of rows){
       const ym = r.ym || (r.date||'').slice(0,7);
-      if(ym!==cur){ cur=ym; items.push({html:`<tr class="month"><td colspan="8">${monthLabel(ym)}</td></tr>`, month:true}); }
+      if(ym!==cur){ cur=ym; items.push({html:`<tr class="month"><td colspan="6">${monthLabel(ym)}</td></tr>`, month:true}); }
       items.push({html:pdfRow(r)});
     }
     const probe=document.createElement('div'); probe.className='page'; probe.style.height='auto';
@@ -499,7 +497,7 @@ async function makePdf(){
       btn.textContent=`作成中… ${i+1}/${pages.length}`;
       stage.innerHTML='';
       const pg=document.createElement('div'); pg.className='page';
-      pg.innerHTML = (i===0 ? `<h2>${title}</h2><div class="meta">データ更新: ${esc(published.updated)} ／ 出力: ${new Date().toLocaleString('ja-JP')} ／ ${rows.length}件${f.length?' ／ 絞り込み: '+esc(f.join(' / ')):''} ／ ◎公式確認 ○報道等 △予想・要確認</div>` : '') + pdfTable(pages[i]) + `<div class="pn">${i+1} / ${pages.length}</div>`;
+      pg.innerHTML = (i===0 ? `<h2>${title}</h2><div class="meta">データ更新: ${esc(published.updated)} ／ 出力: ${new Date().toLocaleString('ja-JP')} ／ ${rows.length}件${f.length?' ／ 絞り込み: '+esc(f.join(' / ')):''}</div>` : '') + pdfTable(pages[i]) + `<div class="pn">${i+1} / ${pages.length}</div>`;
       stage.append(pg);
       const canvas = await html2canvas(pg,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
       if(i>0) pdf.addPage();
