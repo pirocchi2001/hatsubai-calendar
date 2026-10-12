@@ -120,6 +120,11 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
 .cal .un span{display:inline-block;margin-right:.8em}
 .cal .ucols{flex:1;display:flex;gap:10px;border-top:1px solid #9aa7b4;padding-top:4px;line-height:1.2;overflow:hidden}.cal .ug{flex:1;min-width:0}
 .cal .ug b{display:block;font-size:12px;margin:3px 0;background:#eef0f3;padding:1px 3px;break-after:avoid}.cal .ug .it{padding-left:.7em;text-indent:-.7em;word-break:break-all;break-inside:avoid}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;align-items:flex-start;justify-content:center;padding:6vh 12px}.modal.show{display:flex}
+.mbox{background:#fff;border-radius:12px;padding:16px 18px;width:min(640px,100%);min-height:420px;box-shadow:0 10px 40px rgba(0,0,0,.3)}.mbox h3{margin:0 0 4px}.mh{font-size:12.5px;color:var(--sub);margin:4px 0 10px}
+.mrow{display:flex;gap:10px;flex-wrap:wrap}.mrow label{font-size:12px;color:var(--sub);display:flex;flex-direction:column;gap:3px}.mrow select{padding:8px 9px;border:1px solid #c5ced8;border-radius:7px;font-size:14px}
+.mact{display:flex;gap:8px;justify-content:flex-end;margin-top:240px}.mact button{padding:9px 16px;border:1px solid #c5ced8;border-radius:8px;background:#fff;font-size:14px;cursor:pointer}.mact .primary{background:#1f2d3d;color:#fff;border-color:#1f2d3d}
+@media(max-width:800px){.mrow .mf,.mrow label{width:100%}.mact{margin-top:260px}}
 </style>
 </head>
 <body>
@@ -155,6 +160,13 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
   <p class="stat" id="stat"></p>
   <div class="wrap"><table id="tbl"></table></div>
 </main>
+<div class="modal" id="calModal"><div class="mbox">
+  <h3>🗓 月間カレンダーを作成</h3>
+  <p class="mh">掲示するカテゴリ・ブランドを選んでください（一覧の絞り込みとは別です）。何も選ばなければ全て対象です。</p>
+  <div class="mrow"><label>月<select id="cMonth"></select></label><div class="mf" id="mfCCat"></div><div class="mf" id="mfCBrand"></div></div>
+  <p class="mh" id="cCount"></p>
+  <div class="mact"><button id="cCancel">キャンセル</button><button class="primary" id="cGo">📄 PDFを作成</button></div>
+</div></div>
 <div class="toast" id="toast"></div>
 <div id="pdfStage"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -259,7 +271,7 @@ function fillFilters(){
   const months = [...new Set(rows.map(r=>r.ym || (r.date||'').slice(0,7)).filter(Boolean))].sort();
   const keep = {m:$('fMonth').value};
   $('fMonth').innerHTML = '<option value="">すべて</option>' + months.map(m=>`<option value="${m}">${m.slice(0,4)}年${m.slice(5)}月</option>`).join('');
-  $('fMonth').value=keep.m; if(window.mfRender){ mfRender('cat'); mfRender('brand'); }
+  $('fMonth').value=keep.m; if(window.mfRender){ ['cat','brand','ccat','cbrand'].forEach(k=>$(MF[k].box)&&mfRender(k)); }
 }
 
 /* ---------- 編集 ---------- */
@@ -299,6 +311,9 @@ $('bReset').onclick = ()=>{
 /* ---------- カテゴリ/ブランド: 選択・除外フィルタ ---------- */
 const GIRL_BRANDS=['サンリオ','サンエックス','すみっコぐらし','ちいかわ','mofusand','ジュエルペット','おジャ魔女どれみ','きらりん☆レボリューション','ミルモでポン','めちゃモテ委員長','ぺたもりしーる','ウィッシュキャット','ナルミヤキャラクターズ','Lil ala mode','ほっぺちゃん','ケアベア','ミッフィー','パワーパフ ガールズ','カードキャプターさくら','ムーミン','コジコジ','お茶犬','モンチッチ','プリキュア','アイカツ','アイプリ','たまごっち','シルバニア','リカちゃん','ディズニー','魔法少女・魔法騎士','スヌーピー','エンジェルポケット','ねこあつめ','ギャルネコ','ボンボンドロップ','どうぶつの森'];
 const MF={cat:{mode:'inc',set:new Set(),title:'カテゴリ',key:'cat',q:''},brand:{mode:'inc',set:new Set(),title:'ブランド',key:'brand',q:'',presets:[['👧 女の子向け',GIRL_BRANDS]]}};
+MF.cat.box='mfCat'; MF.brand.box='mfBrand'; MF.cat.chg=MF.brand.chg=()=>{saveMF();render();};
+MF.ccat={mode:'inc',set:new Set(),title:'カテゴリ',key:'cat',q:'',box:'mfCCat',chg:()=>{}};
+MF.cbrand={mode:'inc',set:new Set(),title:'ブランド',key:'brand',q:'',box:'mfCBrand',presets:[['👧 女の子向け',GIRL_BRANDS]],chg:()=>{}};
 try{const sv=JSON.parse(localStorage.getItem('hatsubaiCal_mf')||'null'); if(sv) for(const k of ['cat','brand']){ if(sv[k]){MF[k].mode=sv[k].mode==='exc'?'exc':'inc'; MF[k].set=new Set(sv[k].set||[]);} }}catch(e){}
 function saveMF(){ try{localStorage.setItem('hatsubaiCal_mf',JSON.stringify({cat:{mode:MF.cat.mode,set:[...MF.cat.set]},brand:{mode:MF.brand.mode,set:[...MF.brand.set]}}));}catch(e){} }
 function mfPass(k,v){ const m=MF[k]; if(!m.set.size) return true; const hit=m.set.has(v||''); return m.mode==='inc'?hit:!hit; }
@@ -306,27 +321,27 @@ function mfLabel(k){ const m=MF[k]; if(!m.set.size) return m.title+': すべて'
 function mfDesc(k){ const m=MF[k]; return m.set.size? `${m.title}${m.mode==='inc'?'=':'≠'}${[...m.set].join('・')}`:''; }
 function mfOptions(k){
   const rows=allRows(), cnt={};
-  rows.forEach(r=>{const v=r[MF[k].key]||''; if(k==='brand'&&!v) return; cnt[v]=(cnt[v]||0)+1;});
+  rows.forEach(r=>{const v=r[MF[k].key]||''; if(MF[k].key==='brand'&&!v) return; cnt[v]=(cnt[v]||0)+1;});
   let vals=Object.keys(cnt);
   MF[k].set.forEach(v=>{ if(!(v in cnt)) vals.push(v); });
   vals=[...new Set(vals)];
-  vals.sort(k==='cat'?(a,b)=>CATS.indexOf(a)-CATS.indexOf(b):(a,b)=>a.localeCompare(b,'ja'));
+  vals.sort(MF[k].key==='cat'?(a,b)=>CATS.indexOf(a)-CATS.indexOf(b):(a,b)=>a.localeCompare(b,'ja'));
   return vals.map(v=>[v,cnt[v]||0]);
 }
 function mfRender(k, keepOpen){
-  const m=MF[k], box=$(k==='cat'?'mfCat':'mfBrand'), wasOpen=keepOpen||box.classList.contains('open');
+  const m=MF[k], box=$(m.box), wasOpen=keepOpen||box.classList.contains('open');
   const q=m.q.trim().toLowerCase();
   const opts=mfOptions(k).filter(([v])=>!q||v.toLowerCase().includes(q));
   box.innerHTML=`<span>${m.title}</span><button type="button" class="mfb ${m.set.size?'on':''} ${m.set.size&&m.mode==='exc'?'exc':''}" data-a="toggle">${esc(mfLabel(k))} ▾</button>
   <div class="pn2"><div class="md"><button type="button" data-a="inc" class="${m.mode==='inc'?'a':''}">✔ 選択</button><button type="button" data-a="exc" class="${m.mode==='exc'?'a x':''}">✖ 除外</button></div>
-  ${k==='brand'?`<input class="sq" data-a="q" placeholder="ブランドを絞り込み" value="${esc(m.q)}">`:''}
+  ${m.key==='brand'?`<input class="sq" data-a="q" placeholder="ブランドを絞り込み" value="${esc(m.q)}">`:''}
   <div class="tools">${(m.presets||[]).map((p,i)=>`<button type="button" data-a="preset" data-i="${i}">${p[0]}</button>`).join('')}<button type="button" data-a="clear">解除</button><button type="button" data-a="close">閉じる</button></div>
   <div class="ls">${opts.map(([v,n])=>`<label><input type="checkbox" data-v="${esc(v)}" ${m.set.has(v)?'checked':''}> ${esc(v)}<span class="n">${n}</span></label>`).join('')||'<div style="padding:6px;color:#889">該当なし</div>'}</div></div>`;
   box.classList.toggle('open',wasOpen);
-  if(wasOpen&&k==='brand'&&document.activeElement===document.body){ const i=box.querySelector('.sq'); if(i&&m.q){i.focus();i.setSelectionRange(m.q.length,m.q.length);} }
+  if(wasOpen&&m.key==='brand'&&document.activeElement===document.body){ const i=box.querySelector('.sq'); if(i&&m.q){i.focus();i.setSelectionRange(m.q.length,m.q.length);} }
 }
-['cat','brand'].forEach(k=>{
-  const box=$(k==='cat'?'mfCat':'mfBrand'), m=MF[k];
+['cat','brand','ccat','cbrand'].forEach(k=>{
+  const m=MF[k], box=$(m.box);
   box.addEventListener('click',e=>{
     e.stopPropagation();
     const a=e.target.dataset&&e.target.dataset.a; if(!a) return;
@@ -335,9 +350,9 @@ function mfRender(k, keepOpen){
     if(a==='inc'||a==='exc') m.mode=a;
     if(a==='clear'){ m.set.clear(); m.q=''; }
     if(a==='preset'){ const p=m.presets[+e.target.dataset.i][1]; const have=new Set(mfOptions(k).map(x=>x[0])); m.mode='inc'; m.set=new Set(p.filter(v=>have.has(v))); }
-    saveMF(); mfRender(k,true); render();
+    mfRender(k,true); m.chg();
   });
-  box.addEventListener('change',e=>{ e.stopPropagation(); const v=e.target.dataset&&e.target.dataset.v; if(v===undefined) return; e.target.checked?m.set.add(v):m.set.delete(v); saveMF(); const sq=box.querySelector('.sq'); mfRender(k,true); render(); });
+  box.addEventListener('change',e=>{ e.stopPropagation(); const v=e.target.dataset&&e.target.dataset.v; if(v===undefined) return; e.target.checked?m.set.add(v):m.set.delete(v); mfRender(k,true); m.chg(); });
   box.addEventListener('input',e=>{ if(e.target.dataset&&e.target.dataset.a==='q'){ m.q=e.target.value; const pos=m.q.length; mfRender(k,true); const i=box.querySelector('.sq'); i.focus(); i.setSelectionRange(pos,pos); } });
 });
 document.addEventListener('click',e=>{ if(!e.target.closest('.mf')) document.querySelectorAll('.mf.open').forEach(x=>x.classList.remove('open')); });
@@ -442,10 +457,21 @@ function undatedPage(ym, list, fs){
   return `<h2>${Y}年${M}月 発売日未定・旬のみ公表の商品<small>日付が確定していない商品です。発売日は公式サイトでご確認ください</small></h2>
   <div class="ucols" data-n="${cols.length}" style="font-size:${fs}px">${cols.map(c=>`<div class="ug">${c.join('')}</div>`).join('')}</div>`;
 }
+function calRows(){ return allRows().filter(r=>mfPass('ccat',r.cat)&&mfPass('cbrand',r.brand)); }
+function calMonths(){ return [...new Set(allRows().map(r=>r.ym||(r.date||'').slice(0,7)).filter(Boolean))].sort(); }
+function calUpdateCount(){ const fm=$('cMonth').value, n=calRows().filter(r=>!fm||(r.ym||(r.date||'').slice(0,7))===fm).length; $('cCount').textContent=`対象: ${n}件`; }
+function openCalDialog(){
+  const cur=$('cMonth').value;
+  $('cMonth').innerHTML='<option value="">全ての月（1か月1ページ）</option>'+calMonths().map(m=>`<option value="${m}">${m.slice(0,4)}年${m.slice(5)}月</option>`).join('');
+  $('cMonth').value=cur||$('fMonth').value||''; ['ccat','cbrand'].forEach(k=>mfRender(k)); calUpdateCount(); $('calModal').classList.add('show');
+}
+$('cMonth').onchange=calUpdateCount; ['ccat','cbrand'].forEach(k=>MF[k].chg=calUpdateCount);
+$('cCancel').onclick=()=>$('calModal').classList.remove('show');
+$('calModal').addEventListener('click',e=>{ if(e.target.id==='calModal') $('calModal').classList.remove('show'); });
+$('cGo').onclick=()=>{ $('calModal').classList.remove('show'); makeCalendar(); };
 async function makeCalendar(){
   if(!window.html2canvas || !window.jspdf){ toast('PDFライブラリを読み込み中です。少し待ってからもう一度押してください'); return; }
-  const rows=filtered(); if(!rows.length){ toast('出力する行がありません'); return; }
-  const fm=$('fMonth').value;
+  const rows=calRows(); const fm=$('cMonth').value; if(!rows.filter(r=>!fm||(r.ym||(r.date||'').slice(0,7))===fm).length){ toast('該当する商品がありません'); return; }
   const months=fm?[fm]:[...new Set(rows.map(r=>r.ym||(r.date||'').slice(0,7)).filter(Boolean))].sort();
   const btn=$('bCal'); btn.disabled=true; const label=btn.textContent; const stage=$('pdfStage'); let squeezed=0;
   try{
@@ -469,7 +495,7 @@ async function makeCalendar(){
   }catch(err){ console.error(err); toast('作成に失敗しました: '+err.message); }
   finally{ stage.innerHTML=''; btn.disabled=false; btn.textContent=label; }
 }
-$('bCal').onclick=makeCalendar;
+$('bCal').onclick=openCalDialog;
 
 /* ---------- 起動 ---------- */
 (async function init(){
