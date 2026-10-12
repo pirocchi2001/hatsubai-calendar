@@ -146,7 +146,7 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
 </header>
 <main>
   <div class="bar">
-    <label class="grow">キーワード検索<input id="q" placeholder="商品名・ブランド・メーカー・備考・確度(◎○△)"></label>
+    <label class="grow">キーワード検索<input id="q" placeholder="商品名・キャラクター・メーカー・備考・確度(◎○△)"></label>
     <label>月<select id="fMonth"></select></label>
     <div class="mf" id="mfCat"></div>
     <div class="mf" id="mfBrand"></div>
@@ -166,7 +166,7 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
 </main>
 <div class="modal" id="calModal"><div class="mbox">
   <h3>🗓 月間カレンダーを作成</h3>
-  <p class="mh">掲示するカテゴリ・ブランドを選んでください（一覧の絞り込みとは別です）。何も選ばなければ全て対象です。発売日が決まっている商品のみ掲載します。</p>
+  <p class="mh">掲示するカテゴリ・キャラクターを選んでください（一覧の絞り込みとは別です）。何も選ばなければ全て対象です。発売日が決まっている商品のみ掲載します。</p>
   <div class="mrow"><label>月<select id="cMonth"></select></label><div class="mf" id="mfCCat"></div><div class="mf" id="mfCBrand"></div><div class="mf" id="mfCConf"></div></div>
   <p class="mh" id="cCount"></p>
   <div class="mact"><button id="cCancel">キャンセル</button><button class="primary" id="cGo">📄 PDFを作成</button></div>
@@ -252,13 +252,13 @@ function editRow(r){
   const L=(l,c)=>`<td data-label="${l}">${c}</td>`;
   return `<tr class="er ${r._edited?'edited':''}">${L('発売日',`<input type="date" data-id="${esc(r.id)}" data-f="date" value="${esc(r.date)}"><div class="row2">${sel(r,'period',PERIODS,true)}<input type="month" data-id="${esc(r.id)}" data-f="ym" value="${esc(r.ym)}"></div>`)}
   ${L('メーカー',inp(r,'maker'))}${L('カテゴリ',`<select data-id="${esc(r.id)}" data-f="cat">${[...new Set([...CATS, r.cat])].map(o=>`<option ${r.cat===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`)}
-  ${L('ブランド',inp(r,'brand'))}${L('商品名・限定',`${inp(r,'name')}<div class="row2">${inp(r,'limit','placeholder="限定（例: 法人限定）"')}</div>`)}
+  ${L('キャラクター',inp(r,'brand'))}${L('商品名・限定',`${inp(r,'name')}<div class="row2">${inp(r,'limit','placeholder="限定（例: 法人限定）"')}</div>`)}
   ${L('価格(税込)',inp(r,'price'))}${L('確度',sel(r,'conf',['◎','○','△']))}
   ${L('備考',`${inp(r,'note')}<div class="row2"><button class="del" data-del="${esc(r.id)}">この行を削除</button></div>`)}</tr>`;
 }
 function render(){
   const rows = filtered();
-  let html = `<thead><tr><th>発売日</th><th>メーカー</th><th>カテゴリ</th><th>ブランド</th><th>商品名</th><th>価格(税込)</th>${editMode?'<th>確度</th><th>備考・出典</th>':''}</tr></thead><tbody>`;
+  let html = `<thead><tr><th>発売日</th><th>メーカー</th><th>カテゴリ</th><th>キャラクター</th><th>商品名</th><th>価格(税込)</th>${editMode?'<th>確度</th><th>備考・出典</th>':''}</tr></thead><tbody>`;
   let cur = null;
   for(const r of rows){
     const ym = r.ym || (r.date||'').slice(0,7);
@@ -306,7 +306,7 @@ $('bAdd').onclick = ()=>{
   saveLocal(); $('q').value=''; fillFilters(); render(); toast('行を追加しました。商品名などを入力してください');
 };
 $('bReset').onclick = ()=>{
-  if(!confirm('オールリセット：この端末での編集・追加・削除をすべて元に戻し、絞り込み（検索・月・カテゴリ・ブランド・確度・限定）も全て解除します。よろしいですか？')) return;
+  if(!confirm('オールリセット：この端末での編集・追加・削除をすべて元に戻し、絞り込み（検索・月・カテゴリ・キャラクター・確度・限定）も全て解除します。よろしいですか？')) return;
   local = {edits:{}, added:[], deleted:[]}; saveLocal();
   $('q').value=''; $('fMonth').value=''; $('fLimit').value='';
   ['cat','brand','conf'].forEach(k=>{ MF[k].set.clear(); MF[k].mode='inc'; MF[k].q=''; }); saveMF();
@@ -315,15 +315,15 @@ $('bReset').onclick = ()=>{
 ['q','fMonth','fLimit'].forEach(id=>$(id).addEventListener('input', render));
 
 
-/* ---------- カテゴリ/ブランド: 選択・除外フィルタ ---------- */
+/* ---------- カテゴリ/キャラクター: 選択・除外フィルタ ---------- */
 const GIRL_BRANDS=['サンリオ','サンエックス','すみっコぐらし','ちいかわ','mofusand','ジュエルペット','おジャ魔女どれみ','きらりん☆レボリューション','ミルモでポン','めちゃモテ委員長','ぺたもりしーる','ウィッシュキャット','ナルミヤキャラクターズ','Lil ala mode','ほっぺちゃん','ケアベア','ミッフィー','パワーパフ ガールズ','カードキャプターさくら','ムーミン','コジコジ','お茶犬','モンチッチ','プリキュア','アイカツ','アイプリ','たまごっち','シルバニア','リカちゃん','ディズニー','魔法少女・魔法騎士','スヌーピー','エンジェルポケット','ねこあつめ','ギャルネコ','ボンボンドロップ','どうぶつの森'];
-const MF={cat:{mode:'inc',set:new Set(),title:'カテゴリ',key:'cat',q:''},brand:{mode:'inc',set:new Set(),title:'ブランド',key:'brand',q:'',presets:[['👧 女の子向け',GIRL_BRANDS]]}};
+const MF={cat:{mode:'inc',set:new Set(),title:'カテゴリ',key:'cat',q:''},brand:{mode:'inc',set:new Set(),title:'キャラクター',key:'brand',q:'',presets:[['👧 女の子向け',GIRL_BRANDS]]}};
 MF.cat.box='mfCat'; MF.brand.box='mfBrand'; MF.cat.chg=MF.brand.chg=()=>{saveMF();render();};
 const CONF_LABELS={'◎':'◎ 公式確認','○':'○ 報道等','△':'△ 予想・未確定'};
 MF.conf={mode:'inc',set:new Set(),title:'確度',key:'conf',q:'',box:'mfConf',labels:CONF_LABELS,chg:()=>{saveMF();render();}};
 MF.cconf={mode:'inc',set:new Set(),title:'確度',key:'conf',q:'',box:'mfCConf',labels:CONF_LABELS,chg:()=>{}};
 MF.ccat={mode:'inc',set:new Set(),title:'カテゴリ',key:'cat',q:'',box:'mfCCat',chg:()=>{}};
-MF.cbrand={mode:'inc',set:new Set(),title:'ブランド',key:'brand',q:'',box:'mfCBrand',presets:[['👧 女の子向け',GIRL_BRANDS]],chg:()=>{}};
+MF.cbrand={mode:'inc',set:new Set(),title:'キャラクター',key:'brand',q:'',box:'mfCBrand',presets:[['👧 女の子向け',GIRL_BRANDS]],chg:()=>{}};
 try{const sv=JSON.parse(localStorage.getItem('hatsubaiCal_mf')||'null'); if(sv) for(const k of ['cat','brand','conf']){ if(sv[k]){MF[k].mode=sv[k].mode==='exc'?'exc':'inc'; MF[k].set=new Set(sv[k].set||[]);} }}catch(e){}
 function saveMF(){ try{localStorage.setItem('hatsubaiCal_mf',JSON.stringify({cat:{mode:MF.cat.mode,set:[...MF.cat.set]},brand:{mode:MF.brand.mode,set:[...MF.brand.set]},conf:{mode:MF.conf.mode,set:[...MF.conf.set]}}));}catch(e){} }
 function mfPass(k,v){ const m=MF[k]; if(!m.set.size) return true; const hit=m.set.has(v||''); return m.mode==='inc'?hit:!hit; }
@@ -344,7 +344,7 @@ function mfRender(k, keepOpen){
   const opts=mfOptions(k).filter(([v])=>!q||v.toLowerCase().includes(q));
   box.innerHTML=`<span>${m.title}</span><button type="button" class="mfb ${m.set.size?'on':''} ${m.set.size&&m.mode==='exc'?'exc':''}" data-a="toggle">${esc(mfLabel(k))} ▾</button>
   <div class="pn2"><div class="md"><button type="button" data-a="inc" class="${m.mode==='inc'?'a':''}">✔ 選択</button><button type="button" data-a="exc" class="${m.mode==='exc'?'a x':''}">✖ 除外</button></div>
-  ${m.key==='brand'?`<input class="sq" data-a="q" placeholder="ブランドを絞り込み" value="${esc(m.q)}">`:''}
+  ${m.key==='brand'?`<input class="sq" data-a="q" placeholder="キャラクターを絞り込み" value="${esc(m.q)}">`:''}
   <div class="tools">${(m.presets||[]).map((p,i)=>`<button type="button" data-a="preset" data-i="${i}">${p[0]}</button>`).join('')}<button type="button" data-a="clear">解除</button><button type="button" data-a="close">閉じる</button></div>
   <div class="ls">${opts.map(([v,n])=>`<label><input type="checkbox" data-v="${esc(v)}" ${m.set.has(v)?'checked':''}> ${esc((m.labels&&m.labels[v])||v)}<span class="n">${n}</span></label>`).join('')||'<div style="padding:6px;color:#889">該当なし</div>'}</div></div>`;
   box.classList.toggle('open',wasOpen);
@@ -376,7 +376,7 @@ $('bPrint').onclick = ()=>{ if(editMode) $('bEdit').click(); setTimeout(()=>wind
 /* ---------- PDF ---------- */
 function pdfTable(items){
   return `<table><colgroup><col style="width:78px"><col style="width:108px"><col style="width:78px"><col style="width:84px"><col><col style="width:84px"></colgroup>
-  <thead><tr><th>発売日</th><th>メーカー</th><th>カテゴリ</th><th>ブランド</th><th>商品名</th><th>価格(税込)</th></tr></thead><tbody>${items.join('')}</tbody></table>`;
+  <thead><tr><th>発売日</th><th>メーカー</th><th>カテゴリ</th><th>キャラクター</th><th>商品名</th><th>価格(税込)</th></tr></thead><tbody>${items.join('')}</tbody></table>`;
 }
 function pdfRow(r){
   const lim = r.limit ? (/法人/.test(r.limit) ? `<span class="corp">🏢${esc(r.limit)}</span>` : `<span class="lim">${esc(r.limit)}</span>`) : '';
