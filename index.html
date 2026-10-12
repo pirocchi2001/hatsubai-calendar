@@ -45,6 +45,7 @@ tr.edited td:first-child{box-shadow:inset 4px 0 0 var(--yellow)}
 td:nth-child(2){min-width:120px}
 td.date{white-space:nowrap;font-weight:600}
 td.price{white-space:nowrap;text-align:right}
+.flt{cursor:pointer;color:inherit;text-decoration:none;border-bottom:1px dotted #8a9bb0}.flt:hover{color:var(--blue);border-bottom-color:var(--blue)}
 .chip{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:#e8eef5;color:#33475b;white-space:nowrap}
 td.conf{text-align:center}
 .c-◎{color:#2f8a1f;font-weight:700}.c-○{color:#2a78b4;font-weight:700}.c-△{color:#c2410c;font-weight:700}
@@ -95,7 +96,7 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
   .empty{background:white;border-radius:10px}
   .toast{bottom:16px}
 }
-@media print{body{background:white}header,.bar,.info,.stat,.toast{display:none}main{margin:0;padding:0;max-width:none}.wrap{border:0;max-height:none;overflow:visible}table{min-width:0;font-size:10px}th,tr.month td{position:static}td button,td.del{display:none}@page{size:A4 landscape;margin:10mm}}
+@media print{body{background:white}header,.bar,.info,.stat,.toast{display:none}main{margin:0;padding:0;max-width:none}.wrap{border:0;max-height:none;overflow:visible}table{min-width:0;font-size:10px}th,tr.month td{position:static}td button,td.del{display:none}.flt{border:0}@page{size:A4 landscape;margin:10mm}}
 
 .mf{position:relative;font-size:12px;color:var(--sub);display:flex;flex-direction:column;gap:3px}
 .mf>button.mfb{padding:8px 9px;border:1px solid #c5ced8;border-radius:7px;font-size:14px;background:white;text-align:left;cursor:pointer;min-width:130px;color:inherit}
@@ -148,6 +149,7 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
   <div class="bar">
     <label class="grow">キーワード検索<input id="q" placeholder="商品名・キャラクター・メーカー・備考・確度(◎○△)"></label>
     <label>月<select id="fMonth"></select></label>
+    <div class="mf" id="mfMaker"></div>
     <div class="mf" id="mfCat"></div>
     <div class="mf" id="mfBrand"></div>
     <div class="mf" id="mfConf"></div>
@@ -230,7 +232,7 @@ function filtered(){
   return allRows().filter(r=>{
     const ym = r.ym || (r.date||'').slice(0,7);
     if(fm && ym!==fm) return false;
-    if(!mfPass('cat',r.cat) || !mfPass('brand',r.brand)) return false;
+    if(!mfPass('maker',r.maker) || !mfPass('cat',r.cat) || !mfPass('brand',r.brand)) return false;
     if(!mfPass('conf',r.conf)) return false;
     if(fl==='corp' && !/法人/.test(r.limit||'')) return false;
     if(fl==='any' && !r.limit) return false;
@@ -240,9 +242,10 @@ function filtered(){
 }
 function limitHtml(l){ if(!l) return ''; return /法人/.test(l) ? `<span class="corp">🏢 ${esc(l)}</span>` : `<span class="lim">${esc(l)}</span>`; }
 
+function fl(k,v){ return v?`<a class="flt" data-k="${k}" data-v="${esc(v)}" title="クリックで「${esc(v)}」だけに絞り込み（もう一度押すと解除）">${esc(v)}</a>`:''; }
 function viewRow(r){
   const src = r.src ? ` <a href="${esc(r.src)}" target="_blank" rel="noopener">出典↗</a>` : '';
-  return `<tr class="vr ${r._edited?'edited':''}"><td class="date">${esc(fmtDate(r))}</td><td class="maker">${esc(r.maker)}</td><td class="cat"><span class="chip">${esc(r.cat)}</span></td><td class="brand">${esc(r.brand)}</td><td class="name">${esc(r.name)} ${limitHtml(r.limit)}</td><td class="price">${esc(r.price)}</td></tr>`;
+  return `<tr class="vr ${r._edited?'edited':''}"><td class="date">${esc(fmtDate(r))}</td><td class="maker">${fl('maker',r.maker)}</td><td class="cat"><span class="chip">${fl('cat',r.cat)}</span></td><td class="brand">${fl('brand',r.brand)}</td><td class="name">${esc(r.name)} ${limitHtml(r.limit)}</td><td class="price">${esc(r.price)}</td></tr>`;
 }
 function inp(r, f, extra=''){ return `<input data-id="${esc(r.id)}" data-f="${f}" value="${esc(r[f])}" ${extra}>`; }
 function sel(r, f, opts, blank){
@@ -275,7 +278,7 @@ function fillFilters(){
   const months = [...new Set(rows.map(r=>r.ym || (r.date||'').slice(0,7)).filter(Boolean))].sort();
   const keep = {m:$('fMonth').value};
   $('fMonth').innerHTML = '<option value="">すべて</option>' + months.map(m=>`<option value="${m}">${m.slice(0,4)}年${m.slice(5)}月</option>`).join('');
-  $('fMonth').value=keep.m; if(window.mfRender){ ['cat','brand','conf','ccat','cbrand','cconf'].forEach(k=>$(MF[k].box)&&mfRender(k)); }
+  $('fMonth').value=keep.m; if(window.mfRender){ ['maker','cat','brand','conf','ccat','cbrand','cconf'].forEach(k=>$(MF[k].box)&&mfRender(k)); }
 }
 
 /* ---------- 編集 ---------- */
@@ -284,6 +287,12 @@ $('tbl').addEventListener('change', e=>{
   updateRow(t.dataset.id, t.dataset.f, t.value);
   if(t.dataset.f==='date' || t.dataset.f==='period' || t.dataset.f==='ym'){ fillFilters(); render(); }
   else { t.closest('tr').classList.add('edited'); $('stat').textContent = $('stat').textContent.replace(/ ／ この端末.*$/,'') + ' ／ この端末で編集中の変更あり'; }
+});
+$('tbl').addEventListener('click', e=>{
+  const f=e.target.closest&&e.target.closest('a.flt'); if(!f) return;
+  const m=MF[f.dataset.k], v=f.dataset.v;
+  if(m.mode==='inc'&&m.set.size===1&&m.set.has(v)) m.set.clear(); else { m.mode='inc'; m.set=new Set([v]); }
+  saveMF(); mfRender(f.dataset.k); render(); window.scrollTo({top:0,behavior:'smooth'});
 });
 $('tbl').addEventListener('click', e=>{
   const id = e.target.dataset && e.target.dataset.del; if(!id) return;
@@ -309,7 +318,7 @@ $('bReset').onclick = ()=>{
   if(!confirm('オールリセット：この端末での編集・追加・削除をすべて元に戻し、絞り込み（検索・月・カテゴリ・キャラクター・確度・限定）も全て解除します。よろしいですか？')) return;
   local = {edits:{}, added:[], deleted:[]}; saveLocal();
   $('q').value=''; $('fMonth').value=''; $('fLimit').value='';
-  ['cat','brand','conf'].forEach(k=>{ MF[k].set.clear(); MF[k].mode='inc'; MF[k].q=''; }); saveMF();
+  ['maker','cat','brand','conf'].forEach(k=>{ MF[k].set.clear(); MF[k].mode='inc'; MF[k].q=''; }); saveMF();
   fillFilters(); render(); toast('オールリセットしました');
 };
 ['q','fMonth','fLimit'].forEach(id=>$(id).addEventListener('input', render));
@@ -317,21 +326,21 @@ $('bReset').onclick = ()=>{
 
 /* ---------- カテゴリ/キャラクター: 選択・除外フィルタ ---------- */
 const GIRL_BRANDS=['サンリオ','サンエックス','すみっコぐらし','ちいかわ','mofusand','ジュエルペット','おジャ魔女どれみ','きらりん☆レボリューション','ミルモでポン','めちゃモテ委員長','ぺたもりしーる','ウィッシュキャット','ナルミヤキャラクターズ','Lil ala mode','ほっぺちゃん','ケアベア','ミッフィー','パワーパフ ガールズ','カードキャプターさくら','ムーミン','コジコジ','お茶犬','モンチッチ','プリキュア','アイカツ','アイプリ','たまごっち','シルバニア','リカちゃん','ディズニー','魔法少女・魔法騎士','スヌーピー','エンジェルポケット','ねこあつめ','ギャルネコ','ボンボンドロップ','どうぶつの森'];
-const MF={cat:{mode:'inc',set:new Set(),title:'カテゴリ',key:'cat',q:''},brand:{mode:'inc',set:new Set(),title:'キャラクター',key:'brand',q:'',presets:[['👧 女の子向け',GIRL_BRANDS]]}};
-MF.cat.box='mfCat'; MF.brand.box='mfBrand'; MF.cat.chg=MF.brand.chg=()=>{saveMF();render();};
+const MF={maker:{mode:'inc',set:new Set(),title:'メーカー',key:'maker',q:''},cat:{mode:'inc',set:new Set(),title:'カテゴリ',key:'cat',q:''},brand:{mode:'inc',set:new Set(),title:'キャラクター',key:'brand',q:'',presets:[['👧 女の子向け',GIRL_BRANDS]]}};
+MF.maker.box='mfMaker'; MF.maker.chg=()=>{saveMF();render();}; MF.cat.box='mfCat'; MF.brand.box='mfBrand'; MF.cat.chg=MF.brand.chg=()=>{saveMF();render();};
 const CONF_LABELS={'◎':'◎ 公式確認','○':'○ 報道等','△':'△ 予想・未確定'};
 MF.conf={mode:'inc',set:new Set(),title:'確度',key:'conf',q:'',box:'mfConf',labels:CONF_LABELS,chg:()=>{saveMF();render();}};
 MF.cconf={mode:'inc',set:new Set(),title:'確度',key:'conf',q:'',box:'mfCConf',labels:CONF_LABELS,chg:()=>{}};
 MF.ccat={mode:'inc',set:new Set(),title:'カテゴリ',key:'cat',q:'',box:'mfCCat',chg:()=>{}};
 MF.cbrand={mode:'inc',set:new Set(),title:'キャラクター',key:'brand',q:'',box:'mfCBrand',presets:[['👧 女の子向け',GIRL_BRANDS]],chg:()=>{}};
-try{const sv=JSON.parse(localStorage.getItem('hatsubaiCal_mf')||'null'); if(sv) for(const k of ['cat','brand','conf']){ if(sv[k]){MF[k].mode=sv[k].mode==='exc'?'exc':'inc'; MF[k].set=new Set(sv[k].set||[]);} }}catch(e){}
-function saveMF(){ try{localStorage.setItem('hatsubaiCal_mf',JSON.stringify({cat:{mode:MF.cat.mode,set:[...MF.cat.set]},brand:{mode:MF.brand.mode,set:[...MF.brand.set]},conf:{mode:MF.conf.mode,set:[...MF.conf.set]}}));}catch(e){} }
+try{const sv=JSON.parse(localStorage.getItem('hatsubaiCal_mf')||'null'); if(sv) for(const k of ['maker','cat','brand','conf']){ if(sv[k]){MF[k].mode=sv[k].mode==='exc'?'exc':'inc'; MF[k].set=new Set(sv[k].set||[]);} }}catch(e){}
+function saveMF(){ try{localStorage.setItem('hatsubaiCal_mf',JSON.stringify({maker:{mode:MF.maker.mode,set:[...MF.maker.set]},cat:{mode:MF.cat.mode,set:[...MF.cat.set]},brand:{mode:MF.brand.mode,set:[...MF.brand.set]},conf:{mode:MF.conf.mode,set:[...MF.conf.set]}}));}catch(e){} }
 function mfPass(k,v){ const m=MF[k]; if(!m.set.size) return true; const hit=m.set.has(v||''); return m.mode==='inc'?hit:!hit; }
 function mfLabel(k){ const m=MF[k]; if(!m.set.size) return m.title+': すべて'; return `${m.title}: ${m.mode==='inc'?'選択':'除外'} ${m.set.size}件`; }
 function mfDesc(k){ const m=MF[k]; return m.set.size? `${m.title}${m.mode==='inc'?'=':'≠'}${[...m.set].join('・')}`:''; }
 function mfOptions(k){
   const rows=allRows(), cnt={};
-  rows.forEach(r=>{const v=r[MF[k].key]||''; if(MF[k].key==='brand'&&!v) return; cnt[v]=(cnt[v]||0)+1;});
+  rows.forEach(r=>{const v=r[MF[k].key]||''; if((MF[k].key==='brand'||MF[k].key==='maker')&&!v) return; cnt[v]=(cnt[v]||0)+1;});
   let vals=Object.keys(cnt);
   MF[k].set.forEach(v=>{ if(!(v in cnt)) vals.push(v); });
   vals=[...new Set(vals)];
@@ -344,13 +353,13 @@ function mfRender(k, keepOpen){
   const opts=mfOptions(k).filter(([v])=>!q||v.toLowerCase().includes(q));
   box.innerHTML=`<span>${m.title}</span><button type="button" class="mfb ${m.set.size?'on':''} ${m.set.size&&m.mode==='exc'?'exc':''}" data-a="toggle">${esc(mfLabel(k))} ▾</button>
   <div class="pn2"><div class="md"><button type="button" data-a="inc" class="${m.mode==='inc'?'a':''}">✔ 選択</button><button type="button" data-a="exc" class="${m.mode==='exc'?'a x':''}">✖ 除外</button></div>
-  ${m.key==='brand'?`<input class="sq" data-a="q" placeholder="キャラクターを絞り込み" value="${esc(m.q)}">`:''}
+  ${m.key==='brand'||m.key==='maker'?`<input class="sq" data-a="q" placeholder="${m.title}を絞り込み" value="${esc(m.q)}">`:''}
   <div class="tools">${(m.presets||[]).map((p,i)=>`<button type="button" data-a="preset" data-i="${i}">${p[0]}</button>`).join('')}<button type="button" data-a="clear">解除</button><button type="button" data-a="close">閉じる</button></div>
   <div class="ls">${opts.map(([v,n])=>`<label><input type="checkbox" data-v="${esc(v)}" ${m.set.has(v)?'checked':''}> ${esc((m.labels&&m.labels[v])||v)}<span class="n">${n}</span></label>`).join('')||'<div style="padding:6px;color:#889">該当なし</div>'}</div></div>`;
   box.classList.toggle('open',wasOpen);
-  if(wasOpen&&m.key==='brand'&&document.activeElement===document.body){ const i=box.querySelector('.sq'); if(i&&m.q){i.focus();i.setSelectionRange(m.q.length,m.q.length);} }
+  if(wasOpen&&(m.key==='brand'||m.key==='maker')&&document.activeElement===document.body){ const i=box.querySelector('.sq'); if(i&&m.q){i.focus();i.setSelectionRange(m.q.length,m.q.length);} }
 }
-['cat','brand','conf','ccat','cbrand','cconf'].forEach(k=>{
+['maker','cat','brand','conf','ccat','cbrand','cconf'].forEach(k=>{
   const m=MF[k], box=$(m.box);
   box.addEventListener('click',e=>{
     e.stopPropagation();
@@ -412,7 +421,7 @@ async function makePdf(){
     // 3) 1ページずつ画像化してPDFへ
     const {jsPDF}=window.jspdf; const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
     const title=`新商品発売スケジュール`;
-    const f=[]; if($('fMonth').value) f.push($('fMonth').selectedOptions[0].text); if(mfDesc('cat')) f.push(mfDesc('cat')); if(mfDesc('brand')) f.push(mfDesc('brand')); if(mfDesc('conf')) f.push(mfDesc('conf')); if($('q').value) f.push('検索:'+$('q').value);
+    const f=[]; if($('fMonth').value) f.push($('fMonth').selectedOptions[0].text); if(mfDesc('maker')) f.push(mfDesc('maker')); if(mfDesc('cat')) f.push(mfDesc('cat')); if(mfDesc('brand')) f.push(mfDesc('brand')); if(mfDesc('conf')) f.push(mfDesc('conf')); if($('q').value) f.push('検索:'+$('q').value);
     for(let i=0;i<pages.length;i++){
       btn.textContent=`作成中… ${i+1}/${pages.length}`;
       stage.innerHTML='';
