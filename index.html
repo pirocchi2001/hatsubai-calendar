@@ -307,7 +307,7 @@ function mfRender(k, keepOpen){
   const q=m.q.trim().toLowerCase();
   const opts=mfOptions(k).filter(([v])=>!q||v.toLowerCase().includes(q));
   box.innerHTML=`<span>${m.title}</span><button type="button" class="mfb ${m.set.size?'on':''} ${m.set.size&&m.mode==='exc'?'exc':''}" data-a="toggle">${esc(mfLabel(k))} ▾</button>
-  <div class="pn2"><div class="md"><button type="button" data-a="inc" class="${m.mode==='inc'?'a':''}">✔ 選択（これだけ表示）</button><button type="button" data-a="exc" class="${m.mode==='exc'?'a x':''}">✖ 除外（これを隠す）</button></div>
+  <div class="pn2"><div class="md"><button type="button" data-a="inc" class="${m.mode==='inc'?'a':''}">✔ 選択</button><button type="button" data-a="exc" class="${m.mode==='exc'?'a x':''}">✖ 除外</button></div>
   ${k==='brand'?`<input class="sq" data-a="q" placeholder="ブランドを絞り込み" value="${esc(m.q)}">`:''}
   <div class="tools">${(m.presets||[]).map((p,i)=>`<button type="button" data-a="preset" data-i="${i}">${p[0]}</button>`).join('')}<button type="button" data-a="clear">解除</button><button type="button" data-a="close">閉じる</button></div>
   <div class="ls">${opts.map(([v,n])=>`<label><input type="checkbox" data-v="${esc(v)}" ${m.set.has(v)?'checked':''}> ${esc(v)}<span class="n">${n}</span></label>`).join('')||'<div style="padding:6px;color:#889">該当なし</div>'}</div></div>`;
