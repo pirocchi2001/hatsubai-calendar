@@ -15,7 +15,7 @@ header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;ba
 .divider{width:1px;height:40px;background:var(--line)}
 h1{margin:0;font-size:22px}
 .sub{margin:2px 0 0;font-size:13px;color:var(--sub)}
-.back{margin-left:auto;font-size:14px;color:var(--ink);text-decoration:none;border:1px solid var(--line);padding:8px 14px;border-radius:8px;background:white}
+.guide-btn{margin-left:auto}.guide-btn+.back{margin-left:0}.back{margin-left:auto;font-size:14px;color:var(--ink);text-decoration:none;border:1px solid var(--line);padding:8px 14px;border-radius:8px;background:white}
 main{max-width:1500px;margin:18px auto;padding:0 20px}
 .bar{background:white;border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
 .bar label{font-size:12px;color:var(--sub);display:flex;flex-direction:column;gap:3px}
@@ -91,7 +91,7 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
   .empty{background:white;border-radius:10px}
   .toast{bottom:16px}
 }
-@media print{body{background:white}header,.bar,.info,.guide,.manual-link,.stat,.toast{display:none}main{margin:0;padding:0;max-width:none}.wrap{border:0;max-height:none;overflow:visible}table{min-width:0;font-size:10px}th,tr.month td{position:static}td button,td.del{display:none}@page{size:A4 landscape;margin:10mm}}
+@media print{body{background:white}header,.bar,.info,.stat,.toast{display:none}main{margin:0;padding:0;max-width:none}.wrap{border:0;max-height:none;overflow:visible}table{min-width:0;font-size:10px}th,tr.month td{position:static}td button,td.del{display:none}@page{size:A4 landscape;margin:10mm}}
 
 .mf{position:relative;font-size:12px;color:var(--sub);display:flex;flex-direction:column;gap:3px}
 .mf>button.mfb{padding:8px 9px;border:1px solid #c5ced8;border-radius:7px;font-size:14px;background:white;text-align:left;cursor:pointer;min-width:130px;color:inherit}
@@ -125,15 +125,6 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
 .mrow{display:flex;gap:10px;flex-wrap:wrap}.mrow label{font-size:12px;color:var(--sub);display:flex;flex-direction:column;gap:3px}.mrow select{padding:8px 9px;border:1px solid #c5ced8;border-radius:7px;font-size:14px}
 .mact{display:flex;gap:8px;justify-content:flex-end;margin-top:240px}.mact button{padding:9px 16px;border:1px solid #c5ced8;border-radius:8px;background:#fff;font-size:14px;cursor:pointer}.mact .primary{background:#1f2d3d;color:#fff;border-color:#1f2d3d}
 @media(max-width:800px){.mrow .mf,.mrow label{width:100%}.mact{margin-top:260px}}
-.guide{background:#fff;border:1px solid #d6dee6;border-left:5px solid #2b8fc4;border-radius:10px;margin-bottom:12px;padding:0 14px 12px}
-.guide>summary{cursor:pointer;font-weight:700;font-size:15px;padding:10px 0}
-.gcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.gc{border:1px solid #d6dee6;border-radius:9px;padding:9px 12px;background:#fafcfe}.gc.warn{background:#fff8e1;border-color:#f0dca0}
-.gh{font-weight:700;font-size:15px;margin-bottom:4px;display:flex;align-items:center;gap:6px}.gh span{font-size:20px}
-.gc p{margin:2px 0;font-size:13px}.gc ul{margin:3px 0 0;padding-left:1.2em}.gc li{font-size:13px;line-height:1.6;margin:1px 0}
-.guide .btnx{display:inline-block;border:1px solid #c5ced8;border-radius:6px;padding:0 7px;background:#f4f6f8;font-size:12px;white-space:nowrap}
-@media(max-width:800px){.gcards{grid-template-columns:1fr}}
-.manual-link{margin:0 0 8px;font-size:14px;font-weight:600}.manual-link a{color:#0b6fa4}
 </style>
 </head>
 <body>
@@ -145,31 +136,11 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
       <h1>新商品発売スケジュール</h1>
       <p class="sub">玩具・ホビー・キャラクターグッズの発売一覧（毎週水・金に更新）</p>
     </div>
+    <a class="back guide-btn" href="manual.pdf" target="_blank" rel="noopener">📖 使い方</a>
     <a class="back" href="https://pirocchi2001.github.io/sagyo-tool/">← 作業ツールへ</a>
   </div>
 </header>
 <main>
-  <p class="manual-link">📄 <a href="manual.pdf" target="_blank" rel="noopener">使い方ガイドをPDFで開く・保存する（manual.pdf）</a></p>
-  <details class="guide" id="guide" open><summary>📖 使い方（クリックで開閉）</summary>
-    <div class="gcards">
-      <div class="gc"><div class="gh"><span>🔍</span>さがす</div>
-        <p>画面上部のボックスで絞り込みます。</p>
-        <ul><li>キーワード・月を入力／選択</li><li>カテゴリ・ブランド・確度は<br><span class="btnx">✔ 選択</span> ＝ これだけ表示<br><span class="btnx">✖ 除外</span> ＝ これを隠す</li><li><span class="btnx">👧 女の子向け</span> でまとめて選択</li></ul></div>
-      <div class="gc"><div class="gh"><span>📄</span>PDFで保存</div>
-        <p><span class="btnx">PDFをダウンロード</span></p>
-        <ul><li>今の表示内容がそのままPDFに</li><li>先に絞り込めば、必要な分だけ出力</li></ul></div>
-      <div class="gc"><div class="gh"><span>🗓</span>掲示用カレンダー</div>
-        <p><span class="btnx">月間カレンダー</span></p>
-        <ul><li>月・カテゴリ・ブランド・確度を選ぶ</li><li>「PDFを作成」を押す</li><li>商品名のみ・発売日が決まっているものだけ載ります</li></ul></div>
-      <div class="gc"><div class="gh"><span>✏️</span>内容を直す</div>
-        <p><span class="btnx">編集モード</span></p>
-        <ul><li>表を直接書き換え・行の追加／削除</li><li>保存先は<b>この端末のブラウザ内のみ</b></li><li>戻すときは「編集を全て戻す」</li></ul></div>
-      <div class="gc"><div class="gh"><span>🔄</span>更新のタイミング</div>
-        <ul><li><b>バンダイ分</b>：毎週水・金 朝6時に自動</li><li><b>その他</b>：手動で調査・追加</li></ul></div>
-      <div class="gc warn"><div class="gh"><span>⚠️</span>ご注意</div>
-        <ul><li>発売日・価格は変更されることがあります</li><li>確度が ○・△ の商品は、<b>公式サイトで要確認</b></li><li>確度は「確度」の絞り込みで見分けられます（◎公式 ○報道 △予想）</li></ul></div>
-    </div>
-  </details>
   <div class="bar">
     <label class="grow">キーワード検索<input id="q" placeholder="商品名・ブランド・メーカー・備考・確度(◎○△)"></label>
     <label>月<select id="fMonth"></select></label>
@@ -531,7 +502,6 @@ async function makeCalendar(){
 $('bCal').onclick=openCalDialog;
 
 /* ---------- 起動 ---------- */
-if(window.matchMedia('(max-width:800px)').matches) $('guide').open=false;
 (async function init(){
   try{
     const res = await fetch('data.json?t=' + Date.now());
