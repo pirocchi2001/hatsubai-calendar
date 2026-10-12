@@ -49,6 +49,8 @@ td.price{white-space:nowrap;text-align:right}
 .chip{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;background:#e8eef5;color:#33475b;white-space:nowrap}
 td.conf{text-align:center}
 .c-◎{color:#2f8a1f;font-weight:700}.c-○{color:#2a78b4;font-weight:700}.c-△{color:#c2410c;font-weight:700}
+.nw{display:inline-block;background:#e8590c;color:white;border-radius:5px;padding:0 6px;font-size:10.5px;font-weight:700;margin-right:4px}.nw.c{background:#2b7de9}
+@media print{.nw{display:none}}
 .corp{display:inline-block;background:var(--red);color:white;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:700;white-space:nowrap}
 .lim{display:inline-block;background:#fff3d6;color:#8a5a00;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:600}
 .note{color:#555;font-size:12px}
@@ -153,7 +155,7 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
     <div class="mf" id="mfCat"></div>
     <div class="mf" id="mfBrand"></div>
     <div class="mf" id="mfConf"></div>
-    <label>限定<select id="fLimit"><option value="">すべて</option><option value="corp">法人限定のみ</option><option value="any">限定ありのみ</option></select></label>
+    <label>限定<select id="fLimit"><option value="">すべて</option><option value="corp">法人限定のみ</option><option value="any">限定ありのみ</option><option value="new">🆕 新着・変更のみ</option></select></label>
     <div class="btns">
       <button id="bEdit">✏️ 編集モード</button>
       <button id="bAdd" style="display:none">＋ 行を追加</button>
@@ -236,6 +238,7 @@ function filtered(){
     if(!mfPass('conf',r.conf)) return false;
     if(fl==='corp' && !/法人/.test(r.limit||'')) return false;
     if(fl==='any' && !r.limit) return false;
+    if(fl==='new' && !DIFF.n.has(r.id) && !DIFF.c.has(r.id)) return false;
     if(q && !(`${r.name} ${r.brand} ${r.maker} ${r.cat} ${r.note} ${r.conf}`.toLowerCase().includes(q))) return false;
     return true;
   }).sort((a,b)=> sortKey(a)<sortKey(b)?-1:1);
@@ -243,9 +246,24 @@ function filtered(){
 function limitHtml(l){ if(!l) return ''; return /法人/.test(l) ? `<span class="corp">🏢 ${esc(l)}</span>` : `<span class="lim">${esc(l)}</span>`; }
 
 function fl(k,v){ return v?`<a class="flt" data-k="${k}" data-v="${esc(v)}" title="クリックで「${esc(v)}」だけに絞り込み（もう一度押すと解除）">${esc(v)}</a>`:''; }
+const DIFF={n:new Set(),c:new Set()};
+function diffMark(id){ return DIFF.n.has(id)?'<span class="nw">NEW</span>':DIFF.c.has(id)?'<span class="nw c">変更</span>':''; }
+function calcDiff(){
+  /* 前回見たデータ版との差分（この端末のみ。データ更新ごとに更新され、次の更新まで表示） */
+  const sig=r=>[r.date,r.period,r.price,r.conf,r.name].join('|');
+  const cur={}; published.rows.forEach(r=>cur[r.id]=sig(r));
+  let st=null; try{ st=JSON.parse(localStorage.getItem('hatsubaiCal_seen')||'null'); }catch(e){}
+  if(!st){ st={ver:published.updated,ids:cur,n:[],c:[]}; }
+  else if(st.ver!==published.updated){
+    const n=[],c=[]; for(const id in cur){ if(!(id in st.ids)) n.push(id); else if(st.ids[id]!==cur[id]) c.push(id); }
+    st={ver:published.updated,ids:cur,n,c};
+  }
+  try{ localStorage.setItem('hatsubaiCal_seen',JSON.stringify(st)); }catch(e){}
+  DIFF.n=new Set(st.n); DIFF.c=new Set(st.c);
+}
 function viewRow(r){
   const src = r.src ? ` <a href="${esc(r.src)}" target="_blank" rel="noopener">出典↗</a>` : '';
-  return `<tr class="vr ${r._edited?'edited':''}"><td class="date">${esc(fmtDate(r))}</td><td class="maker">${fl('maker',r.maker)}</td><td class="cat"><span class="chip">${fl('cat',r.cat)}</span></td><td class="brand">${fl('brand',r.brand)}</td><td class="name">${esc(r.name)} ${limitHtml(r.limit)}</td><td class="price">${esc(r.price)}</td></tr>`;
+  return `<tr class="vr ${r._edited?'edited':''}"><td class="date">${esc(fmtDate(r))}</td><td class="maker">${fl('maker',r.maker)}</td><td class="cat"><span class="chip">${fl('cat',r.cat)}</span></td><td class="brand">${fl('brand',r.brand)}</td><td class="name">${diffMark(r.id)}${esc(r.name)} ${limitHtml(r.limit)}</td><td class="price">${esc(r.price)}</td></tr>`;
 }
 function inp(r, f, extra=''){ return `<input data-id="${esc(r.id)}" data-f="${f}" value="${esc(r[f])}" ${extra}>`; }
 function sel(r, f, opts, blank){
@@ -271,7 +289,7 @@ function render(){
   html += '</tbody>';
   $('tbl').innerHTML = rows.length ? html : '<tbody><tr><td class="empty">該当する商品がありません</td></tr></tbody>';
   const corp = rows.filter(r=>/法人/.test(r.limit||'')).length;
-  $('stat').textContent = `${rows.length}件を表示（全${allRows().length}件）／ データ更新: ${published.updated||'-'}／ 法人限定: ${corp}件` + (local.added.length||Object.keys(local.edits).length||local.deleted.length ? ' ／ この端末で編集中の変更あり' : '');
+  $('stat').textContent = `${rows.length}件を表示（全${allRows().length}件）／ データ更新: ${published.updated||'-'}／ 法人限定: ${corp}件`+(DIFF.n.size||DIFF.c.size?` ／ 🆕新着${DIFF.n.size}件・変更${DIFF.c.size}件（「限定」欄で絞り込めます）`:'') + (local.added.length||Object.keys(local.edits).length||local.deleted.length ? ' ／ この端末で編集中の変更あり' : '');
 }
 function fillFilters(){
   const rows = allRows();
@@ -522,7 +540,7 @@ $('bCal').onclick=openCalDialog;
     const res = await fetch('data.json?t=' + Date.now());
     published = await res.json();
   }catch(e){ toast('data.json を読み込めませんでした'); }
-  fillFilters(); render();
+  calcDiff(); fillFilters(); render();
 })();
 </script>
 </body>
