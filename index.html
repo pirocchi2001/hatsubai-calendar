@@ -125,15 +125,15 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
 .mrow{display:flex;gap:10px;flex-wrap:wrap}.mrow label{font-size:12px;color:var(--sub);display:flex;flex-direction:column;gap:3px}.mrow select{padding:8px 9px;border:1px solid #c5ced8;border-radius:7px;font-size:14px}
 .mact{display:flex;gap:8px;justify-content:flex-end;margin-top:240px}.mact button{padding:9px 16px;border:1px solid #c5ced8;border-radius:8px;background:#fff;font-size:14px;cursor:pointer}.mact .primary{background:#1f2d3d;color:#fff;border-color:#1f2d3d}
 @media(max-width:800px){.mrow .mf,.mrow label{width:100%}.mact{margin-top:260px}}
-.guide{background:#fff;border:1px solid #d6dee6;border-left:5px solid #2b8fc4;border-radius:10px;margin-bottom:12px;padding:0 14px}
-.guide>summary{cursor:pointer;font-weight:700;font-size:15px;padding:11px 0}
-.guide h3{font-size:14px;margin:16px 0 6px;padding:3px 8px;background:#eaf5fb;border-radius:5px}
-.guide p,.guide li{font-size:13.5px;line-height:1.75;margin:4px 0}.guide ul,.guide ol{margin:4px 0 4px 1.3em;padding:0}
-.guide table{border-collapse:collapse;font-size:13px;margin:6px 0;width:100%}.guide th,.guide td{border:1px solid #d6dee6;padding:5px 8px;text-align:left;vertical-align:top}.guide th{background:#f4f6f8;white-space:nowrap}
-.guide .btnx{display:inline-block;border:1px solid #c5ced8;border-radius:6px;padding:0 7px;background:#f4f6f8;font-size:12.5px;white-space:nowrap}
-.guide .tip{background:#fff8e1;border-radius:6px;padding:6px 10px;font-size:13px;margin:6px 0}
+.guide{background:#fff;border:1px solid #d6dee6;border-left:5px solid #2b8fc4;border-radius:10px;margin-bottom:12px;padding:0 14px 12px}
+.guide>summary{cursor:pointer;font-weight:700;font-size:15px;padding:10px 0}
+.gcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.gc{border:1px solid #d6dee6;border-radius:9px;padding:9px 12px;background:#fafcfe}.gc.warn{background:#fff8e1;border-color:#f0dca0}
+.gh{font-weight:700;font-size:15px;margin-bottom:4px;display:flex;align-items:center;gap:6px}.gh span{font-size:20px}
+.gc p{margin:2px 0;font-size:13px}.gc ul{margin:3px 0 0;padding-left:1.2em}.gc li{font-size:13px;line-height:1.6;margin:1px 0}
+.guide .btnx{display:inline-block;border:1px solid #c5ced8;border-radius:6px;padding:0 7px;background:#f4f6f8;font-size:12px;white-space:nowrap}
+@media(max-width:800px){.gcards{grid-template-columns:1fr}}
 .manual-link{margin:0 0 8px;font-size:14px;font-weight:600}.manual-link a{color:#0b6fa4}
-.guide .last{margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -150,82 +150,25 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
 </header>
 <main>
   <p class="manual-link">📄 <a href="manual.pdf" target="_blank" rel="noopener">使い方ガイドをPDFで開く・保存する（manual.pdf）</a></p>
-  <details class="guide" id="guide" open><summary>📖 はじめての方へ：このページの使い方（クリックで開閉）</summary>
-    <h3>① このページでできること</h3>
-    <p>おもちゃ・キャラクターグッズ・文具・ゲームなどの<b>新商品の発売日と価格</b>を、日付順の一覧表で確認できます。見たいものだけに絞り込み、<b>PDFで保存</b>したり、<b>掲示用の月間カレンダー</b>を作ったりできます。</p>
-
-    <h3>② 表の見方</h3>
-    <table>
-      <tr><th>発売日</th><td>「10月17日(土)」のように日付が決まっているものと、「10月下旬」「11月未定」のように時期だけのものがあります。時期だけのものは、その月の先頭に表示されます。</td></tr>
-      <tr><th>価格(税込)</th><td>税込の価格です。ゲームなど税抜で発表されたものは、税込に直して載せています。</td></tr>
-      <tr><th>🏢法人限定（赤）</th><td>法人（店舗・企業）向けにしか販売されない商品です。</td></tr>
-      <tr><th>黄色の表示</th><td>「ファミマ限定」など、特定の店・チャネル限定の商品です。</td></tr>
-    </table>
-
-    <h3>③ 見たいものだけに絞り込む</h3>
-    <ol>
-      <li><b>キーワード検索</b>：商品名・ブランド・メーカー・備考の一部を入れると、その言葉を含むものだけが残ります（例：「ちいかわ」）。</li>
-      <li><b>月</b>：見たい月を1つ選びます。</li>
-      <li><b>カテゴリ・ブランド・確度（選択／除外）</b>：確度は表には表示されませんが、絞り込みに使えます（<b>◎</b>公式情報で確認済み／<b>○</b>報道・まとめサイトの情報／<b>△</b>予想・日程未確定）。ボタンを押すとチェックリストが開きます。
-        <ul>
-          <li><span class="btnx">✔ 選択</span>…チェックを付けたものだけを表示します。（例：ブランドで「サンリオ」「ちいかわ」を選択）</li>
-          <li><span class="btnx">✖ 除外</span>…チェックを付けたものを隠します。（例：カテゴリで「カプセルトイ」を除外）</li>
-          <li><span class="btnx">解除</span>…選んだ内容を全部取り消します。<span class="btnx">閉じる</span>…リストを閉じます。</li>
-          <li>ブランドのリストには検索欄があり、名前の一部を入れてリストを絞り込めます。</li>
-          <li><span class="btnx">👧 女の子向け</span>…女の子向けのキャラクターを、ワンタッチでまとめて選択します。</li>
-        </ul>
-      </li>
-      <li><b>限定</b>：「法人限定のみ」「限定ありのみ」で絞れます。</li>
-    </ol>
-    <div class="tip">💡 絞り込みの内容はこの端末に覚えられるので、次に開いたときも同じ状態です。全部戻したいときは各ボタンの「解除」を押してください。</div>
-
-    <h3>④ 一覧をPDF・印刷で保存する</h3>
-    <ul>
-      <li><span class="btnx">📄 PDFをダウンロード</span>…今画面に出ている内容（絞り込み後）を、A4横の表のPDFにして保存します。作成に少し時間がかかります（件数が多いと数十秒）。</li>
-      <li><span class="btnx">🖨 印刷</span>…ブラウザの印刷画面を開きます（パソコン用）。</li>
-    </ul>
-
-    <h3>⑤ 掲示用の「月間カレンダー」を作る</h3>
-    <ol>
-      <li><span class="btnx">🗓 月間カレンダー（掲示用PDF）</span>を押します。</li>
-      <li>開いた画面で、<b>月</b>（「全ての月」なら1か月1ページ）、<b>カテゴリ・ブランド・確度</b>を選びます。選び方は③と同じ「選択／除外」です。何も選ばなければ全部が対象です。</li>
-      <li>「対象：○件」で件数を確かめ、チェックリストを<b>「閉じる」</b>で閉じてから<span class="btnx">📄 PDFを作成</span>を押します。</li>
-    </ol>
-    <ul>
-      <li>日曜はじまりのA4横カレンダーに、<b>商品名だけ</b>が日付ごとに載ります。1ページに収まるよう、文字は自動で小さくなります。</li>
-      <li><b>発売日が決まっている商品だけ</b>が載ります（「下旬」「未定」の商品は載りません）。</li>
-      <li>この画面での選択は、一覧の絞り込みとは別です。</li>
-      <li>件数が多いと文字がとても小さくなります。そのときはカテゴリやブランドで絞るか、<b>A3用紙で印刷</b>すると読みやすくなります。</li>
-    </ul>
-
-    <h3>⑥ 内容を自分で直す（編集モード）</h3>
-    <ol>
-      <li><span class="btnx">✏️ 編集モード</span>を押すと、表の各項目（日付・商品名・価格・限定・確度・備考など。確度と備考は編集モードでのみ表示）が入力欄になり、直接書き換えられます。</li>
-      <li><span class="btnx">＋ 行を追加</span>で新しい商品を足せます。各行の「この行を削除」で消せます。</li>
-      <li><span class="btnx">✅ 編集を終える</span>を押すと、通常の表示に戻ります。</li>
-      <li>直したものは自動で保存され、ブランド分けやPDF・カレンダーにも反映されます。</li>
-      <li>間違えたときは<span class="btnx">編集を全て戻す</span>で、元のデータに戻せます。</li>
-    </ol>
-    <div class="tip">⚠️ 編集内容は<b>今使っているパソコン／スマホのブラウザの中にだけ</b>保存されます。他の人や他の端末には反映されません。ブラウザの閲覧データを消すと、編集内容も消えます。</div>
-
-    <h3>⑦ データはいつ更新される？</h3>
-    <ul>
-      <li><b>バンダイ公式カレンダー</b>の分は、<b>毎週水曜・金曜の朝6時ごろ</b>に自動で最新になります。発売日を過ぎたものは自動で消えます。</li>
-      <li>一番くじ・サンリオ・ちいかわ・VTuber・ゲーム・文具など、<b>バンダイ以外の分は人が調べて追加</b>したもので、自動では変わりません。更新したいときは担当者に依頼してください。</li>
-      <li>画面上部の「データ更新」は、データを最後に更新した日時です。</li>
-    </ul>
-
-    <h3>⑧ スマホで使うとき</h3>
-    <ul>
-      <li>表は<b>1商品ずつのカード表示</b>に自動で切り替わります（日付と価格、商品名、カテゴリなど）。</li>
-      <li>ボタンは大きめに並び、横にスクロールしなくても見られます。「PDFをダウンロード」「月間カレンダー」もそのまま使えます。</li>
-    </ul>
-
-    <h3>⑨ ご利用上の注意</h3>
-    <ul class="last">
-      <li>発売日・価格は<b>変更されることがあります</b>。特に確度が<b>○・△</b>のもの（確度の絞り込みで確認できます）は、ご案内や発注の前に<b>必ず公式サイトで確認</b>してください。</li>
-      <li>まだ調べきれていない分野もあります（詳しくは下の「調査メモ・凡例」）。載っていない＝発売しない、ではありません。</li>
-    </ul>
+  <details class="guide" id="guide" open><summary>📖 使い方（クリックで開閉）</summary>
+    <div class="gcards">
+      <div class="gc"><div class="gh"><span>🔍</span>さがす</div>
+        <p>画面上部のボックスで絞り込みます。</p>
+        <ul><li>キーワード・月を入力／選択</li><li>カテゴリ・ブランド・確度は<br><span class="btnx">✔ 選択</span> ＝ これだけ表示<br><span class="btnx">✖ 除外</span> ＝ これを隠す</li><li><span class="btnx">👧 女の子向け</span> でまとめて選択</li></ul></div>
+      <div class="gc"><div class="gh"><span>📄</span>PDFで保存</div>
+        <p><span class="btnx">PDFをダウンロード</span></p>
+        <ul><li>今の表示内容がそのままPDFに</li><li>先に絞り込めば、必要な分だけ出力</li></ul></div>
+      <div class="gc"><div class="gh"><span>🗓</span>掲示用カレンダー</div>
+        <p><span class="btnx">月間カレンダー</span></p>
+        <ul><li>月・カテゴリ・ブランド・確度を選ぶ</li><li>「PDFを作成」を押す</li><li>商品名のみ・発売日が決まっているものだけ載ります</li></ul></div>
+      <div class="gc"><div class="gh"><span>✏️</span>内容を直す</div>
+        <p><span class="btnx">編集モード</span></p>
+        <ul><li>表を直接書き換え・行の追加／削除</li><li>保存先は<b>この端末のブラウザ内のみ</b></li><li>戻すときは「編集を全て戻す」</li></ul></div>
+      <div class="gc"><div class="gh"><span>🔄</span>更新のタイミング</div>
+        <ul><li><b>バンダイ分</b>：毎週水・金 朝6時に自動</li><li><b>その他</b>：手動で調査・追加</li></ul></div>
+      <div class="gc warn"><div class="gh"><span>⚠️</span>ご注意</div>
+        <ul><li>発売日・価格は変更されることがあります</li><li>確度が ○・△ の商品は、<b>公式サイトで要確認</b></li><li>確度は「確度」の絞り込みで見分けられます（◎公式 ○報道 △予想）</li></ul></div>
+    </div>
   </details>
   <div class="bar">
     <label class="grow">キーワード検索<input id="q" placeholder="商品名・ブランド・メーカー・備考・確度(◎○△)"></label>
