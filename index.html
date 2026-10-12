@@ -157,7 +157,6 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
       <button id="bReset">編集を全て戻す</button>
     </div>
   </div>
-  <details class="info" id="info"><summary>調査メモ・凡例（クリックで開く）</summary><ul id="notes"></ul></details>
   <p class="stat" id="stat"></p>
   <div class="wrap"><table id="tbl"></table></div>
 </main>
@@ -507,7 +506,6 @@ $('bCal').onclick=openCalDialog;
     const res = await fetch('data.json?t=' + Date.now());
     published = await res.json();
   }catch(e){ toast('data.json を読み込めませんでした'); }
-  $('notes').innerHTML = (published.notes||[]).map(n=>`<li>${esc(n)}</li>`).join('');
   fillFilters(); render();
 })();
 </script>
