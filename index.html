@@ -106,6 +106,20 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
 .mf .tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.mf .tools button{padding:4px 8px;border:1px solid #c5ced8;border-radius:6px;background:#fff;font-size:12px;cursor:pointer}
 .mf .sq{width:100%;box-sizing:border-box;padding:6px 8px;font-size:13px}
 @media(max-width:800px){.mf{width:calc(50% - 4px)}.mf>button.mfb{width:100%;font-size:16px}.mf .pn2{width:min(320px,92vw)}}
+
+.cal{flex-direction:column;display:flex;font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif}
+.cal h2{margin:0 0 6px;font-size:22px;display:flex;align-items:baseline;gap:12px}.cal h2 small{font-size:11px;font-weight:400;color:#667}
+.cal .wk,.cal .gr{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.cal .wk div{background:#1f2d3d;color:#fff;text-align:center;font-size:12px;padding:3px 0;border:1px solid #1f2d3d}.cal .wk .su{background:#c0392b;border-color:#c0392b}.cal .wk .sa{background:#2b6cb0;border-color:#2b6cb0}
+.cal .gr{flex:1;align-content:stretch;border-left:1px solid #9aa7b4;border-top:1px solid #9aa7b4}
+.cal .d{border-right:1px solid #9aa7b4;border-bottom:1px solid #9aa7b4;padding:1px 2px;line-height:1.18;min-height:22px}
+.cal .d.out{background:#eef0f3}.cal .d.su{background:#fff5f5}.cal .d.sa{background:#f3f8ff}
+.cal .d b{font-size:11px;display:block;line-height:1.1;margin-bottom:1px}.cal .d.su b{color:#c0392b}.cal .d.sa b{color:#2b6cb0}
+.cal .d div.it{padding-left:.7em;text-indent:-.7em;word-break:break-all}
+.cal .un{margin-top:4px;border:1px solid #9aa7b4;padding:2px 4px;overflow:hidden;line-height:1.18}.cal .un b{font-size:11px}
+.cal .un span{display:inline-block;margin-right:.8em}
+.cal .ucols{flex:1;display:flex;gap:10px;border-top:1px solid #9aa7b4;padding-top:4px;line-height:1.2;overflow:hidden}.cal .ug{flex:1;min-width:0}
+.cal .ug b{display:block;font-size:12px;margin:3px 0;background:#eef0f3;padding:1px 3px;break-after:avoid}.cal .ug .it{padding-left:.7em;text-indent:-.7em;word-break:break-all;break-inside:avoid}
 </style>
 </head>
 <body>
@@ -132,10 +146,8 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
       <button id="bEdit">✏️ 編集モード</button>
       <button id="bAdd" style="display:none">＋ 行を追加</button>
       <button class="primary" id="bPdf">📄 PDFをダウンロード</button>
+      <button id="bCal">🗓 月間カレンダー（掲示用PDF）</button>
       <button id="bPrint">🖨 印刷</button>
-      <button id="bCsv">CSV</button>
-      <button id="bJson">JSON書き出し</button>
-      <button id="bImport">JSON読み込み</button>
       <button id="bReset">編集を全て戻す</button>
     </div>
   </div>
@@ -145,7 +157,6 @@ td button.del{padding:3px 8px;font-size:12px;color:var(--red)}
 </main>
 <div class="toast" id="toast"></div>
 <div id="pdfStage"></div>
-<input type="file" id="file" accept=".json,application/json" style="display:none">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -335,38 +346,6 @@ document.addEventListener('click',e=>{ if(!e.target.closest('.mf')) document.que
 function download(name, blob){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); }
 const stamp = () => { const d=new Date(); return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0'); };
 function cleanRow(r){ const o={id:r.id}; [...FIELDS,'src'].forEach(f=>o[f]=r[f]??''); return o; }
-$('bJson').onclick = ()=>{
-  const out = {updated:published.updated, notes:published.notes, rows: allRows().map(cleanRow)};
-  download(`hatsubai_${stamp()}.json`, new Blob([JSON.stringify(out,null,1)],{type:'application/json'}));
-};
-$('bCsv').onclick = ()=>{
-  const head=['発売日','メーカー','カテゴリ','ブランド','商品名','価格(税込)','限定','確度','備考','出典'];
-  const q = v => '"'+String(v??'').replace(/"/g,'""')+'"';
-  const lines=[head.map(q).join(',')].concat(filtered().map(r=>[fmtDateFull(r),r.maker,r.cat,r.brand,r.name,r.price,r.limit,r.conf,r.note,r.src].map(q).join(',')));
-  download(`hatsubai_${stamp()}.csv`, new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv'}));
-};
-function fmtDateFull(r){ return r.date ? r.date.replace(/-/g,'/') : fmtDate(r); }
-$('bImport').onclick = ()=>$('file').click();
-$('file').onchange = async e=>{
-  const f=e.target.files[0]; e.target.value=''; if(!f) return;
-  try{
-    const data = JSON.parse(await f.text());
-    const rows = Array.isArray(data) ? data : data.rows;
-    if(!Array.isArray(rows) || !rows.every(r=>r && r.id && r.name!==undefined)) throw new Error('形式が違います');
-    if(!confirm(`${rows.length}件を読み込みます。この端末の編集内容は読み込んだ内容で置き換わります。よろしいですか？`)) return;
-    const pub = new Map(published.rows.map(r=>[r.id,r]));
-    const seen = new Set(); local = {edits:{}, added:[], deleted:[]};
-    for(const r0 of rows){
-      const r = cleanRow(r0); seen.add(r.id);
-      const p = pub.get(r.id);
-      if(!p){ local.added.push(r); continue; }
-      const diff={}; FIELDS.forEach(k=>{ if((p[k]??'')!==(r[k]??'')) diff[k]=r[k]; });
-      if(Object.keys(diff).length) local.edits[r.id]=diff;
-    }
-    published.rows.forEach(p=>{ if(!seen.has(p.id)) local.deleted.push(p.id); });
-    saveLocal(); fillFilters(); render(); toast('読み込みました');
-  }catch(err){ toast('読み込めませんでした: ' + err.message); }
-};
 $('bPrint').onclick = ()=>{ if(editMode) $('bEdit').click(); setTimeout(()=>window.print(),50); };
 
 /* ---------- PDF ---------- */
@@ -426,6 +405,71 @@ async function makePdf(){
   finally{ stage.innerHTML=''; btn.disabled=false; btn.textContent=label; }
 }
 $('bPdf').onclick = makePdf;
+
+
+/* ---------- 掲示用 月間カレンダーPDF ---------- */
+function calPage(ym, rows, fs){
+  const [Y,M]=ym.split('-').map(Number), first=new Date(Y,M-1,1), last=new Date(Y,M,0).getDate();
+  const lead=first.getDay(), weeks=Math.ceil((lead+last)/7);
+  const byDay={}, undated={};
+  rows.forEach(r=>{
+    const rym=r.ym||(r.date||'').slice(0,7); if(rym!==ym) return;
+    if(r.date){ const d=Number(r.date.slice(8,10)); (byDay[d]=byDay[d]||[]).push(r.name); }
+    else (undated[r.period||'未定']=undated[r.period||'未定']||[]).push(r.name);
+  });
+  const uniq=a=>[...new Set(a.map(x=>x.replace(/\s+/g,' ').trim()))];
+  let cells='';
+  for(let i=0;i<weeks*7;i++){
+    const d=i-lead+1, dow=i%7, cls=(dow===0?'su':dow===6?'sa':'');
+    if(d<1||d>last){ cells+=`<div class="d out"></div>`; continue; }
+    cells+=`<div class="d ${cls}"><b>${d}</b>${uniq(byDay[d]||[]).map(n=>`<div class="it">・${esc(n)}</div>`).join('')}</div>`;
+  }
+  return `<h2>${Y}年${M}月 新商品発売カレンダー<small>出力: ${new Date().toLocaleDateString('ja-JP')} ／ 日付未定・予定は変更になる場合があります</small></h2>
+  <div class="wk">${'日月火水木金土'.split('').map((w,i)=>`<div class="${i===0?'su':i===6?'sa':''}">${w}</div>`).join('')}</div>
+  <div class="gr" style="grid-template-rows:repeat(${weeks},auto);font-size:${fs}px">${cells}</div>`;
+}
+function undatedList(ym, rows){
+  const u={}; rows.forEach(r=>{ if(r.date) return; if((r.ym||'')!==ym) return; (u[r.period||'未定']=u[r.period||'未定']||[]).push(r.name.replace(/\s+/g,' ').trim()); });
+  const keys=['上旬','中旬','下旬','未定'].filter(k=>u[k]); Object.keys(u).forEach(k=>{ if(!keys.includes(k)) keys.push(k); });
+  return keys.map(k=>[k,[...new Set(u[k])]]);
+}
+function undatedPage(ym, list, fs){
+  const [Y,M]=ym.split('-').map(Number);
+  const cap=Math.floor(640/(fs*1.2)), cpl=Math.floor(262/fs);   // 1列の行数・1行の文字数の目安
+  const cols=[[]]; let used=0;
+  const put=(h,lines)=>{ if(used+lines>cap && cols[cols.length-1].length){ cols.push([]); used=0; } cols[cols.length-1].push(h); used+=lines; };
+  list.forEach(([k,a])=>{ put(`<b>【${esc(k)}】${a.length}件</b>`,2); a.forEach(n=>put(`<div class="it">・${esc(n)}</div>`,Math.max(1,Math.ceil((n.length+1)/cpl)))); });
+  return `<h2>${Y}年${M}月 発売日未定・旬のみ公表の商品<small>日付が確定していない商品です。発売日は公式サイトでご確認ください</small></h2>
+  <div class="ucols" data-n="${cols.length}" style="font-size:${fs}px">${cols.map(c=>`<div class="ug">${c.join('')}</div>`).join('')}</div>`;
+}
+async function makeCalendar(){
+  if(!window.html2canvas || !window.jspdf){ toast('PDFライブラリを読み込み中です。少し待ってからもう一度押してください'); return; }
+  const rows=filtered(); if(!rows.length){ toast('出力する行がありません'); return; }
+  const fm=$('fMonth').value;
+  const months=fm?[fm]:[...new Set(rows.map(r=>r.ym||(r.date||'').slice(0,7)).filter(Boolean))].sort();
+  const btn=$('bCal'); btn.disabled=true; const label=btn.textContent; const stage=$('pdfStage'); let squeezed=0;
+  try{
+    const {jsPDF}=window.jspdf; const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    const jobs=[]; months.forEach(m=>{ jobs.push({m,kind:'cal'}); const u=undatedList(m,rows); if(u.length) jobs.push({m,kind:'un',u}); });
+    for(let i=0;i<jobs.length;i++){
+      const j=jobs[i]; btn.textContent=`作成中… ${i+1}/${jobs.length}`;
+      stage.innerHTML=''; const pg=document.createElement('div'); pg.className='page cal'; stage.append(pg);
+      const html=fs=>j.kind==='cal'?calPage(j.m,rows,fs):undatedPage(j.m,j.u,fs);
+      const over=()=>j.kind==='cal' ? pg.scrollHeight>pg.clientHeight+1 : (()=>{const c=pg.querySelector('.ucols'); return +c.dataset.n>4 || [...c.children].some(x=>x.scrollHeight>c.clientHeight+1);})();
+      let fs=9, fits=false;
+      for(; fs>=3.5; fs-=0.25){ pg.innerHTML=html(fs); if(!over()){ fits=true; break; } }
+      if(!fits){ squeezed++; fs=3.5; pg.innerHTML=html(fs); }
+      const canvas=await html2canvas(pg,{scale:3,backgroundColor:'#ffffff',useCORS:true,logging:false});
+      if(i>0) pdf.addPage();
+      pdf.addImage(canvas.toDataURL('image/jpeg',0.92),'JPEG',0,0,297,210);
+      await new Promise(r=>setTimeout(r,0));
+    }
+    pdf.save(`発売カレンダー_${fm||'全月'}_${stamp()}.pdf`);
+    toast(`月間カレンダーPDFを作成しました（${jobs.length}ページ）`+(squeezed?`。${squeezed}か月は件数が多く一部が見切れています。月・カテゴリ等で絞り込んでください`:''));
+  }catch(err){ console.error(err); toast('作成に失敗しました: '+err.message); }
+  finally{ stage.innerHTML=''; btn.disabled=false; btn.textContent=label; }
+}
+$('bCal').onclick=makeCalendar;
 
 /* ---------- 起動 ---------- */
 (async function init(){
