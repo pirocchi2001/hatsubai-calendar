@@ -96,14 +96,37 @@ def cat_of(t, name):
 def make_id(prefix, date, name):
     return prefix + hashlib.md5(f'{date}|{name}'.encode()).hexdigest()[:10]
 
-def fetch_month(ym):
-    req = urllib.request.Request(BASE + ym, headers={'User-Agent': 'Mozilla/5.0'})
-    return urllib.request.urlopen(req, timeout=60).read().decode('utf-8')
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'ja,en-US;q=0.8,en;q=0.6',
+}
+
+def fetch_month(ym, tries=3):
+    """取得失敗・想定外のページ(ボット対策画面など)は数回やり直す"""
+    import time
+    last = None
+    for i in range(tries):
+        try:
+            req = urllib.request.Request(BASE + ym, headers=HEADERS)
+            with urllib.request.urlopen(req, timeout=60) as r:
+                t = r.read().decode('utf-8', 'replace')
+                code = r.status
+            if 'pg-calender__body' in t:
+                return t
+            title = re.search(r'<title>(.*?)</title>', t, re.S)
+            last = f'HTTP {code} / {len(t)}文字 / title={title.group(1).strip() if title else "-"} / 先頭: {t[:200]!r}'
+        except Exception as e:
+            last = repr(e)
+        print(f'  {ym} 取得{i + 1}回目 失敗: {last}', flush=True)
+        time.sleep(5 * (i + 1))
+    raise RuntimeError(last)
 
 def parse_month(ym, t):
     """ym='202611'。カレンダーに該当月のデータがない場合は空リスト。"""
     m = re.search(r'pg-pagerYear">\s*<span class="year">(\d+)</span>年<span class="month">(\d+)</span>', t)
     if not m or f'{m.group(1)}{int(m.group(2)):02d}' != ym:
+        print(f'  {ym}: カレンダーの表示月が一致しません ({m.groups() if m else "年月表示なし"})', flush=True)
         return []
     t = t[t.find('pg-calender__body'):]
     rows = []
@@ -128,9 +151,11 @@ def bandai_rows(months):
     out = []
     for ym in months:
         try:
-            out += parse_month(ym, fetch_month(ym))
+            rows = parse_month(ym, fetch_month(ym))
+            print(f'  {ym}: {len(rows)}件', flush=True)
+            out += rows
         except Exception as e:
-            print('skip', ym, e)
+            print('skip', ym, e, flush=True)
     return out
 
 def next_months(today, n=4):
