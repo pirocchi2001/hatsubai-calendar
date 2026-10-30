@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-29 17:11",
+ "updated": "2026-10-30 09:28",
  "notes": [
   "◎=公式カレンダー/公式サイトで確認、○=報道・まとめサイトで確認、△=予想・非公式・日程未確定(必ず公式で要確認)。",
   "バンダイ分(玩具・ガシャポン・カード・食玩・雑貨)は公式発売カレンダーを毎回自動取得。他社分は手動調査のため抜けがあります。",
@@ -15,21 +15,6 @@
   "【クーリア】シールのみ掲載。公式オンラインストア qlia.store（旧 qlia.shop）と公式X(@bonbon_drop)が一次情報。抽選・店舗限定・一般販売の詳細は ボンドロ情報サイト(bonbon-navi.com)など(○)で補完。新作の発売日は店舗ごとに異なることが多い。"
  ],
  "rows": [
-  {
-   "id": "m-8eed463449",
-   "date": "2026-10-29",
-   "period": "",
-   "ym": "2026-10",
-   "maker": "ゲーム各社",
-   "cat": "ゲーム",
-   "brand": "サンリオ",
-   "name": "サンリオパーティランド (Switch)",
-   "price": "6,380円",
-   "conf": "○",
-   "note": "ファミ通の発売日一覧より。税抜5,800円から換算",
-   "src": "https://www.famitsu.com/schedule/switch/202610",
-   "limit": ""
-  },
   {
    "id": "m-6cb1cf7b66",
    "date": "2026-11-10",
@@ -118,21 +103,6 @@
    "conf": "○",
    "note": "ファミ通の発売日一覧より。税抜7,800円から換算",
    "src": "https://www.famitsu.com/schedule/switch/202612",
-   "limit": ""
-  },
-  {
-   "id": "m-60aef076ff",
-   "date": "2026-10-29",
-   "period": "",
-   "ym": "2026-10",
-   "maker": "コーエーテクモ?",
-   "cat": "ゲーム",
-   "brand": "鬼滅の刃",
-   "name": "鬼滅の刃 ヒノカミ血風譚2 (Switch 2)",
-   "price": "",
-   "conf": "○",
-   "note": "価格未確認。メーカーは要確認",
-   "src": "https://game.kimetsu.com/hinokami2/",
    "limit": ""
   },
   {
@@ -268,21 +238,6 @@
    "conf": "○",
    "note": "きめつねっとの案内",
    "src": "https://kimetsu-net.com/",
-   "limit": ""
-  },
-  {
-   "id": "m-4cb79d41ec",
-   "date": "2026-10-29",
-   "period": "",
-   "ym": "2026-10",
-   "maker": "バンダイスピリッツ",
-   "cat": "キャラくじ",
-   "brand": "ワンピース",
-   "name": "一番くじ ONE PIECE -空に奏でる\"島の歌声\"（ラブ・ソング）-",
-   "price": "850円",
-   "conf": "◎",
-   "note": "店頭発売開始日(順次)",
-   "src": "https://1kuji.com/products",
    "limit": ""
   },
   {
@@ -733,21 +688,6 @@
    "conf": "◎",
    "note": "",
    "src": "https://toy.bandai.co.jp/ja/series/rider/",
-   "limit": ""
-  },
-  {
-   "id": "m-d1cb130fb6",
-   "date": "2026-10-29",
-   "period": "",
-   "ym": "2026-10",
-   "maker": "セガ",
-   "cat": "キャラくじ",
-   "brand": "",
-   "name": "セガ ラッキーくじ PINGU ～PINGU'S Donut Shop～",
-   "price": "",
-   "conf": "○",
-   "note": "",
-   "src": "https://charagoo.jp/kuji/",
    "limit": ""
   },
   {
@@ -1439,36 +1379,6 @@
    "conf": "◎",
    "note": "10月2週から順次投入（マスコット→ドール→BIG・まくら→トート）",
    "src": "https://www.sanrio.co.jp/news/goods/mx-eikoh-tokimeki-ribbonrabbit-20261009/"
-  },
-  {
-   "id": "m-b8a39c0f66",
-   "date": "2026-10-29",
-   "period": "",
-   "ym": "2026-10",
-   "maker": "サンリオ",
-   "cat": "ゲーム",
-   "brand": "サンリオ",
-   "name": "サンリオ パーティランド サンリオショップ限定セット（Switch）",
-   "price": "",
-   "limit": "サンリオショップ・百貨店サンリオコーナー（事前抽選）",
-   "conf": "◎",
-   "note": "キャラクターフィギュアセット・NFCカード付き。数量限定",
-   "src": "https://www.sanrio.co.jp/news/goods/mx-sanrio-party-land-202610/"
-  },
-  {
-   "id": "m-aedbe5ac7a",
-   "date": "2026-10-29",
-   "period": "",
-   "ym": "2026-10",
-   "maker": "麺場 田所商店",
-   "cat": "ファンシー",
-   "brand": "サンリオ",
-   "name": "クロミお誕生日企画 限定フィギュアチャーム／3連結アクリルキーホルダー",
-   "price": "",
-   "limit": "麺場 田所商店の対象店舗",
-   "conf": "◎",
-   "note": "10/29〜11/4の7日間限定",
-   "src": "https://www.sanrio.co.jp/news/goods/ku-tadokoroshoten-20261001/"
   },
   {
    "id": "m-ba055540a8",
@@ -7756,6 +7666,21 @@
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
   },
   {
+   "id": "b-9b7f4fe5d2",
+   "date": "",
+   "period": "未定",
+   "ym": "2026-11",
+   "maker": "バンダイ ガシャポン",
+   "cat": "カプセルトイ",
+   "brand": "",
+   "limit": "",
+   "name": "とんがり帽子のアトリエ めじるしアクセサリー",
+   "price": "300円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
+  },
+  {
    "id": "b-f7ea461398",
    "date": "",
    "period": "未定",
@@ -8305,21 +8230,6 @@
    "brand": "クレヨンしんちゃん",
    "limit": "",
    "name": "ちびまる子ちゃん＆クレヨンしんちゃん ラバーマスコット",
-   "price": "300円",
-   "conf": "◎",
-   "note": "",
-   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
-  },
-  {
-   "id": "b-9b7f4fe5d2",
-   "date": "",
-   "period": "未定",
-   "ym": "2026-11",
-   "maker": "バンダイ ガシャポン",
-   "cat": "カプセルトイ",
-   "brand": "",
-   "limit": "",
-   "name": "とんがり帽子のアトリエ めじるしアクセサリー",
    "price": "300円",
    "conf": "◎",
    "note": "",
