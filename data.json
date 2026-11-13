@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-11 09:56",
+ "updated": "2026-11-13 10:33",
  "notes": [
   "◎=公式カレンダー/公式サイトで確認、○=報道・まとめサイトで確認、△=予想・非公式・日程未確定(必ず公式で要確認)。",
   "バンダイ分(玩具・ガシャポン・カード・食玩・雑貨)は公式発売カレンダーを毎回自動取得。他社分は手動調査のため抜けがあります。",
@@ -15,36 +15,6 @@
   "【クーリア】シールのみ掲載。公式オンラインストア qlia.store（旧 qlia.shop）と公式X(@bonbon_drop)が一次情報。抽選・店舗限定・一般販売の詳細は ボンドロ情報サイト(bonbon-navi.com)など(○)で補完。新作の発売日は店舗ごとに異なることが多い。"
  ],
  "rows": [
-  {
-   "id": "m-1af771f952",
-   "date": "2026-11-12",
-   "period": "",
-   "ym": "2026-11",
-   "maker": "ゲーム各社",
-   "cat": "ゲーム",
-   "brand": "ムーミン",
-   "name": "ムーミン：ムーミン谷の夏まつり (Switch)",
-   "price": "4,480円",
-   "conf": "○",
-   "note": "ファミ通の発売日一覧より。税抜4,073円から換算",
-   "src": "https://www.famitsu.com/schedule/switch/202611",
-   "limit": ""
-  },
-  {
-   "id": "m-62abeed3fb",
-   "date": "2026-11-12",
-   "period": "",
-   "ym": "2026-11",
-   "maker": "ゲーム各社",
-   "cat": "ゲーム",
-   "brand": "",
-   "name": "にほんの田舎ぐらし (Switch)",
-   "price": "3,899円",
-   "conf": "○",
-   "note": "ファミ通の発売日一覧より。税抜3,545円から換算",
-   "src": "https://www.famitsu.com/schedule/switch/202611",
-   "limit": ""
-  },
   {
    "id": "m-1ab3b58a42",
    "date": "2026-12-03",
@@ -88,36 +58,6 @@
    "conf": "○",
    "note": "ファミ通の発売日一覧より。税抜7,800円から換算",
    "src": "https://www.famitsu.com/schedule/switch/202612",
-   "limit": ""
-  },
-  {
-   "id": "m-14e081b84d",
-   "date": "2026-11-12",
-   "period": "",
-   "ym": "2026-11",
-   "maker": "任天堂",
-   "cat": "ゲーム機",
-   "brand": "",
-   "name": "Nintendo Switch 2 選べるソフト セット (日本語・国内専用)",
-   "price": "",
-   "conf": "△",
-   "note": "報道ベース。内容・価格は公式で要確認",
-   "src": "https://www.nintendo.co.jp/corporate/release/2026/261006.html",
-   "limit": ""
-  },
-  {
-   "id": "m-85671161d6",
-   "date": "2026-11-12",
-   "period": "",
-   "ym": "2026-11",
-   "maker": "アトラス",
-   "cat": "ゲーム",
-   "brand": "",
-   "name": "Metaphor:ReFantazio (Switch 2版)",
-   "price": "",
-   "conf": "△",
-   "note": "報道ベース。価格未確認",
-   "src": "https://www.famitsu.com/schedule/switch/202611",
    "limit": ""
   },
   {
@@ -1081,36 +1021,6 @@
    "limit": "ファミマ限定"
   },
   {
-   "id": "m-6fc45fe1aa",
-   "date": "2026-11-12",
-   "period": "",
-   "ym": "2026-11",
-   "maker": "任天堂",
-   "cat": "ゲーム",
-   "brand": "",
-   "name": "ピクミン4 Nintendo Switch 2 Edition (+だれでもチャレンジ!ダンドリ検定)",
-   "price": "7,577円",
-   "conf": "△",
-   "note": "税抜6,889円から換算。公式で要確認",
-   "src": "https://game8.jp/switch2/678427",
-   "limit": ""
-  },
-  {
-   "id": "m-04beea685a",
-   "date": "2026-11-12",
-   "period": "",
-   "ym": "2026-11",
-   "maker": "ロックスター",
-   "cat": "ゲーム",
-   "brand": "",
-   "name": "グランド・セフト・オートVI (PS5)",
-   "price": "",
-   "conf": "△",
-   "note": "情報源により発売日が異なる(11/12プリロード開始・プレイ開始11/19とする記載あり)。必ず公式で確認",
-   "src": "https://game.watch.impress.co.jp/docs/feature/2129552.html",
-   "limit": ""
-  },
-  {
    "id": "m-268f4555b5",
    "date": "2026-12-03",
    "period": "",
@@ -1906,6 +1816,21 @@
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
   },
   {
+   "id": "b-196e023d12",
+   "date": "2026-11-13",
+   "period": "",
+   "ym": "2026-11",
+   "maker": "バンダイ",
+   "cat": "雑貨",
+   "brand": "たまごっち",
+   "limit": "",
+   "name": "たまごっち　ホイップキャリーハンドクリーム",
+   "price": "968円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
+  },
+  {
    "id": "b-cd5dde8f44",
    "date": "2026-11-14",
    "period": "",
@@ -2546,6 +2471,21 @@
    "limit": "",
    "name": "にふぉるめーしょん ゴジラ 大怪獣集結シールウエハース",
    "price": "154円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
+  },
+  {
+   "id": "b-30c180ffe2",
+   "date": "2026-11-16",
+   "period": "",
+   "ym": "2026-11",
+   "maker": "バンダイ",
+   "cat": "雑貨",
+   "brand": "モンチッチ",
+   "limit": "",
+   "name": "ふわかおこんぱくと　モンチッチ",
+   "price": "2,200円",
    "conf": "◎",
    "note": "",
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
@@ -3476,6 +3416,21 @@
    "limit": "",
    "name": "CharmAid　たまごっち",
    "price": "330円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
+  },
+  {
+   "id": "b-3b2c59dbe7",
+   "date": "",
+   "period": "中旬",
+   "ym": "2026-11",
+   "maker": "バンダイ カード事業部",
+   "cat": "TCG/カード",
+   "brand": "仮面ライダー",
+   "limit": "",
+   "name": "仮面ライダーバトル ガンバレジェンズ バーサスロード 5弾",
+   "price": "100円",
    "conf": "◎",
    "note": "",
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
@@ -5551,6 +5506,21 @@
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
   },
   {
+   "id": "b-c038fcd921",
+   "date": "",
+   "period": "下旬",
+   "ym": "2026-11",
+   "maker": "バンダイ ガシャポン",
+   "cat": "カプセルトイ",
+   "brand": "",
+   "limit": "",
+   "name": "逆転裁判 つまんでつなげてますこっと",
+   "price": "400円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
+  },
+  {
    "id": "b-00154abc19",
    "date": "",
    "period": "下旬",
@@ -6331,21 +6301,6 @@
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
   },
   {
-   "id": "b-18a9e8565a",
-   "date": "",
-   "period": "未定",
-   "ym": "2026-11",
-   "maker": "バンダイ ガシャポン",
-   "cat": "カプセルトイ",
-   "brand": "",
-   "limit": "",
-   "name": "逆転裁判 つまんでつなげてますこっと",
-   "price": "400円",
-   "conf": "◎",
-   "note": "",
-   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
-  },
-  {
    "id": "b-82f35bbe78",
    "date": "",
    "period": "未定",
@@ -6721,6 +6676,21 @@
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
   },
   {
+   "id": "b-0b71d4a351",
+   "date": "",
+   "period": "中旬",
+   "ym": "2026-12",
+   "maker": "バンダイ ガシャポン",
+   "cat": "カプセルトイ",
+   "brand": "",
+   "limit": "",
+   "name": "ふわふわ大根おろしのねこちゃあぁぁん めじるしアクセサリー",
+   "price": "300円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
+  },
+  {
    "id": "b-87c8b1ba7f",
    "date": "2026-12-21",
    "period": "",
@@ -6931,6 +6901,21 @@
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
   },
   {
+   "id": "b-0ca71affef",
+   "date": "2026-12-26",
+   "period": "",
+   "ym": "2026-12",
+   "maker": "バンダイ",
+   "cat": "玩具",
+   "brand": "",
+   "limit": "",
+   "name": "バラバライド スターターセット BR-15 デストロイドラボルト",
+   "price": "3,300円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
+  },
+  {
    "id": "b-bd647ed500",
    "date": "2026-12-26",
    "period": "",
@@ -6991,6 +6976,36 @@
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
   },
   {
+   "id": "b-ce79c91978",
+   "date": "2026-12-26",
+   "period": "",
+   "ym": "2026-12",
+   "maker": "バンダイ",
+   "cat": "玩具",
+   "brand": "",
+   "limit": "",
+   "name": "逆転バリバリバース  バリバコイン 第5転～表裏を超える者たち～",
+   "price": "396円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
+  },
+  {
+   "id": "b-5681ea95e8",
+   "date": "2026-12-26",
+   "period": "",
+   "ym": "2026-12",
+   "maker": "バンダイ",
+   "cat": "玩具",
+   "brand": "",
+   "limit": "",
+   "name": "バラバライド ブースターセット BR-16 バラバラッキーボックス2027",
+   "price": "1,540円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
+  },
+  {
    "id": "b-bf4ba20943",
    "date": "2026-12-26",
    "period": "",
@@ -7016,6 +7031,21 @@
    "limit": "",
    "name": "マイマリオ マリオとぼうけん！おでかけ布えほん",
    "price": "2,310円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
+  },
+  {
+   "id": "b-899f78e295",
+   "date": "2026-12-26",
+   "period": "",
+   "ym": "2026-12",
+   "maker": "バンダイ",
+   "cat": "TV玩具",
+   "brand": "仮面ライダー",
+   "limit": "",
+   "name": "DXライダーエグズランダムBOX03",
+   "price": "770円",
    "conf": "◎",
    "note": "",
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
