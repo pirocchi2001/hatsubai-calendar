@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25 12:51",
+ "updated": "2026-11-27 12:20",
  "notes": [
   "◎=公式カレンダー/公式サイトで確認、○=報道・まとめサイトで確認、△=予想・非公式・日程未確定(必ず公式で要確認)。",
   "バンダイ分(玩具・ガシャポン・カード・食玩・雑貨)は公式発売カレンダーを毎回自動取得。他社分は手動調査のため抜けがあります。",
@@ -2356,21 +2356,6 @@
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
   },
   {
-   "id": "b-ff9bb644a4",
-   "date": "2026-11-26",
-   "period": "",
-   "ym": "2026-11",
-   "maker": "バンダイ",
-   "cat": "雑貨",
-   "brand": "ポケモン",
-   "limit": "",
-   "name": "びっくらたまご　バブルフィーバー　ポケモン　～もこもこ大集合♪～",
-   "price": "550円",
-   "conf": "◎",
-   "note": "",
-   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202611"
-  },
-  {
    "id": "b-a42015ef68",
    "date": "2026-11-27",
    "period": "",
@@ -4036,6 +4021,36 @@
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
   },
   {
+   "id": "b-c5cf9b2b04",
+   "date": "2026-12-05",
+   "period": "",
+   "ym": "2026-12",
+   "maker": "バンダイ",
+   "cat": "TV玩具",
+   "brand": "仮面ライダー",
+   "limit": "",
+   "name": "TAF 仮面ライダーマイス ドラゴンライジング",
+   "price": "4,950円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
+  },
+  {
+   "id": "b-778e94e461",
+   "date": "2026-12-05",
+   "period": "",
+   "ym": "2026-12",
+   "maker": "バンダイ",
+   "cat": "TV玩具",
+   "brand": "仮面ライダー",
+   "limit": "",
+   "name": "ライダーヒーローシリーズ 仮面ライダーマイス ドラゴンライジング",
+   "price": "1,100円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
+  },
+  {
    "id": "b-779fb9ce98",
    "date": "2026-12-05",
    "period": "",
@@ -4696,6 +4711,21 @@
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
   },
   {
+   "id": "b-3608ea6c30",
+   "date": "2026-12-26",
+   "period": "",
+   "ym": "2026-12",
+   "maker": "バンダイ",
+   "cat": "玩具",
+   "brand": "ポケモン",
+   "limit": "",
+   "name": "ポケモンチェンジ ジガルデ 50％フォルム／パーフェクトフォルム",
+   "price": "3,850円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
+  },
+  {
    "id": "b-3e6716d5b3",
    "date": "2026-12-26",
    "period": "",
@@ -4751,6 +4781,21 @@
    "limit": "",
    "name": "Kawaii Closet HELLO KITTY vol.1",
    "price": "1,760円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
+  },
+  {
+   "id": "b-b39db04e07",
+   "date": "2026-12-26",
+   "period": "",
+   "ym": "2026-12",
+   "maker": "バンダイ",
+   "cat": "玩具",
+   "brand": "",
+   "limit": "",
+   "name": "バラバライド スターターセット BR-CG ガルダイーグル",
+   "price": "3,850円",
    "conf": "◎",
    "note": "",
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
@@ -4906,6 +4951,21 @@
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
   },
   {
+   "id": "b-ec275cfb83",
+   "date": "",
+   "period": "未定",
+   "ym": "2026-12",
+   "maker": "バンダイ ガシャポン",
+   "cat": "カプセルトイ",
+   "brand": "K-POP",
+   "limit": "",
+   "name": "SKZOO ミニチュアパッケージチャーム",
+   "price": "400円",
+   "conf": "◎",
+   "note": "",
+   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
+  },
+  {
    "id": "b-e4bd4639b4",
    "date": "",
    "period": "未定",
@@ -4946,21 +5006,6 @@
    "limit": "",
    "name": "なめこ栽培キット ミニチュアパッケージチャーム",
    "price": "300円",
-   "conf": "◎",
-   "note": "",
-   "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
-  },
-  {
-   "id": "b-ec275cfb83",
-   "date": "",
-   "period": "未定",
-   "ym": "2026-12",
-   "maker": "バンダイ ガシャポン",
-   "cat": "カプセルトイ",
-   "brand": "K-POP",
-   "limit": "",
-   "name": "SKZOO ミニチュアパッケージチャーム",
-   "price": "400円",
    "conf": "◎",
    "note": "",
    "src": "https://www.bandai.co.jp/calendar/?select_year_month=202612"
